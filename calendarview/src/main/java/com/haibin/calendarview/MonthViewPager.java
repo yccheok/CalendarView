@@ -373,6 +373,11 @@ public final class MonthViewPager extends ViewPager {
     }
 
     @Override
+    public boolean canScrollHorizontally(int direction) {
+        return mDelegate.isMonthViewScrollable() && super.canScrollHorizontally(direction);
+    }
+
+    @Override
     public void setCurrentItem(int item) {
         setCurrentItem(item, true);
     }
