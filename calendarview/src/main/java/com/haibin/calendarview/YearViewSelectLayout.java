@@ -170,4 +170,9 @@ public final class YearViewSelectLayout extends ViewPager {
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         return mDelegate.isYearViewScrollable() && super.onInterceptTouchEvent(ev);
     }
+
+    @Override
+    public boolean canScrollHorizontally(int direction) {
+        return mDelegate.isYearViewScrollable() && super.canScrollHorizontally(direction);
+    }
 }
