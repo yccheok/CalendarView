@@ -1,0 +1,6 @@
+﻿This file summarizes changes in CalendarView releases.
+
+1.0 - 2018-10-12
+================
+Feature: Support parent as ViewPager.
+Feature: Taiwan's festivals.
