@@ -499,7 +499,8 @@ public final class MonthViewPager extends ViewPager {
 
     @Override
     public boolean canScrollHorizontally(int direction) {
-        return mDelegate.isMonthViewScrollable() && super.canScrollHorizontally(direction);
+        // A hacking way, to make parent ViewPager workable.
+        return false;
     }
     
     @Override
