@@ -68,8 +68,12 @@ public abstract class BaseMonthView extends BaseView {
         initCalendar();
         if (mDelegate.getMonthViewShowMode() == CalendarViewDelegate.MODE_ALL_MONTH) {
             mHeight = mItemHeight * mLineCount;
+
+            android.util.Log.i("CHEOK", "1) initMonthWithDate " + mHeight);
         } else {
             mHeight = CalendarUtil.getMonthViewHeight(year, month, mItemHeight, mDelegate.getWeekStart());
+
+            android.util.Log.i("CHEOK", "2) initMonthWithDate " + mHeight);
         }
 
     }

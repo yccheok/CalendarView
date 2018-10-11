@@ -541,6 +541,9 @@ public final class MonthViewPager extends ViewPager {
         public Object instantiateItem(ViewGroup container, int position) {
             int year = (position + mDelegate.getMinYearMonth() - 1) / 12 + mDelegate.getMinYear();
             int month = (position + mDelegate.getMinYearMonth() - 1) % 12 + 1;
+
+            android.util.Log.i("CHEOK", "instantiateItem = " + year + ", " + month);
+
             BaseMonthView view;
             try {
                 Constructor constructor = mDelegate.getMonthViewClass().getConstructor(Context.class);
