@@ -479,7 +479,12 @@ public final class MonthViewPager extends ViewPager {
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        return mDelegate.isMonthViewScrollable() && super.onTouchEvent(ev);
+        boolean intercepted = super.onTouchEvent(swapXY(ev));
+
+        // Return touch coordinates to original reference frame for any child views.
+        swapXY(ev);
+
+        return mDelegate.isMonthViewScrollable() && intercepted;
     }
 
     @Override
