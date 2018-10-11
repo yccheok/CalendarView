@@ -484,7 +484,7 @@ public final class MonthViewPager extends ViewPager {
         // Return touch coordinates to original reference frame for any child views.
         swapXY(ev);
 
-        return mDelegate.isMonthViewScrollable() && intercepted;
+        return intercepted;
     }
 
     @Override
@@ -494,13 +494,12 @@ public final class MonthViewPager extends ViewPager {
         // Return touch coordinates to original reference frame for any child views.
         swapXY(ev);
 
-        return mDelegate.isMonthViewScrollable() && intercepted;
+        return intercepted;
     }
 
     @Override
     public boolean canScrollHorizontally(int direction) {
-        // A hacking way, to make parent ViewPager workable.
-        return false;
+        return mDelegate.isMonthViewScrollable() && super.canScrollHorizontally(direction);
     }
     
     @Override

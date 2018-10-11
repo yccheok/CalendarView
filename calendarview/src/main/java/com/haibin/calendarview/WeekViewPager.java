@@ -376,6 +376,11 @@ public final class WeekViewPager extends ViewPager {
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         return mDelegate.isWeekViewScrollable() && super.onInterceptTouchEvent(ev);
     }
+    
+    @Override
+    public boolean canScrollHorizontally(int direction) {
+        return mDelegate.isWeekViewScrollable() && super.canScrollHorizontally(direction);
+    }
 
     /**
      * 周视图的高度应该与日历项的高度一致
