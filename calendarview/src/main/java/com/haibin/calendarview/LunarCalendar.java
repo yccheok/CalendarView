@@ -19,7 +19,9 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.TextUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 final class LunarCalendar {
@@ -286,34 +288,43 @@ final class LunarCalendar {
      * @return 获取每年的母亲节和父亲节、感恩节
      */
     private static String[] getSpecialFestivals(int year) {
-        String[] festivals = new String[3];
+        List<String> festivals = new ArrayList<>();
         java.util.Calendar date = java.util.Calendar.getInstance();
-        date.set(year, 4, 1);
-        int week = date.get(java.util.Calendar.DAY_OF_WEEK);
-        int startDiff = 7 - week + 1;
-        if (startDiff == 7) {
-            festivals[0] = dateToString(year, 5, startDiff + 1) + SPECIAL_FESTIVAL_STR[0];
-        } else {
-            festivals[0] = dateToString(year, 5, startDiff + 7 + 1) + SPECIAL_FESTIVAL_STR[0];
-        }
-        date.set(year, 5, 1);
-        week = date.get(java.util.Calendar.DAY_OF_WEEK);
-        startDiff = 7 - week + 1;
-        if (startDiff == 7) {
-            festivals[1] = dateToString(year, 6, startDiff + 7 + 1) + SPECIAL_FESTIVAL_STR[1];
-        } else {
-            festivals[1] = dateToString(year, 6, startDiff + 7 + 7 + 1) + SPECIAL_FESTIVAL_STR[1];
+
+        if (!SPECIAL_FESTIVAL_STR[0].isEmpty()) {
+            date.set(year, 4, 1);
+            int week = date.get(java.util.Calendar.DAY_OF_WEEK);
+            int startDiff = 7 - week + 1;
+            if (startDiff == 7) {
+                festivals.add(dateToString(year, 5, startDiff + 1) + SPECIAL_FESTIVAL_STR[0]);
+            } else {
+                festivals.add(dateToString(year, 5, startDiff + 7 + 1) + SPECIAL_FESTIVAL_STR[0]);
+            }
         }
 
-        date.set(year, 10, 1);
-        week = date.get(java.util.Calendar.DAY_OF_WEEK);
-        startDiff = 7 - week + 1;
-        if (startDiff <= 2) {
-            festivals[2] = dateToString(year, 11, startDiff + 21 + 5) + SPECIAL_FESTIVAL_STR[2];
-        } else {
-            festivals[2] = dateToString(year, 11, startDiff + 14 + 5) + SPECIAL_FESTIVAL_STR[2];
+        if (!SPECIAL_FESTIVAL_STR[1].isEmpty()) {
+            date.set(year, 5, 1);
+            int week = date.get(java.util.Calendar.DAY_OF_WEEK);
+            int startDiff = 7 - week + 1;
+            if (startDiff == 7) {
+                festivals.add(dateToString(year, 6, startDiff + 7 + 1) + SPECIAL_FESTIVAL_STR[1]);
+            } else {
+                festivals.add(dateToString(year, 6, startDiff + 7 + 7 + 1) + SPECIAL_FESTIVAL_STR[1]);
+            }
         }
-        return festivals;
+
+        if (!SPECIAL_FESTIVAL_STR[2].isEmpty()) {
+            date.set(year, 10, 1);
+            int week = date.get(java.util.Calendar.DAY_OF_WEEK);
+            int startDiff = 7 - week + 1;
+            if (startDiff <= 2) {
+                festivals.add(dateToString(year, 11, startDiff + 21 + 5) + SPECIAL_FESTIVAL_STR[2]);
+            } else {
+                festivals.add(dateToString(year, 11, startDiff + 14 + 5) + SPECIAL_FESTIVAL_STR[2]);
+            }
+        }
+
+        return festivals.toArray(new String[festivals.size()]);
     }
 
 

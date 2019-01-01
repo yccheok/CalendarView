@@ -68,6 +68,7 @@
         <item>0404兒童節</item>
         <item>0422地球日</item>
         <item>0501勞動節</item>
+        <item>0808父親節</item>
         <item>0903軍人節</item>
         <item>0928教師節</item>
         <item>1010國慶日</item>
@@ -106,7 +107,7 @@
 
     <string-array name="special_festivals">
         <item>母親節</item>
-        <item>父親節</item>
+        <item></item>
         <item>感恩節</item>
     </string-array>
 

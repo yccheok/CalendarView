@@ -1,5 +1,9 @@
 ﻿This file summarizes changes in CalendarView releases.
 
+1.1 - 2019-01-02
+================
+Bugfix:  Taiwan's father day is on 08/08.
+
 1.0 - 2018-10-12
 ================
 Feature: Support parent as ViewPager.
