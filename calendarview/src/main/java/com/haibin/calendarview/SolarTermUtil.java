@@ -587,7 +587,7 @@ final class SolarTermUtil {
         double jd = 365.2422 * (year - 2000), q;
         for (int i = 0; i < 19; i++) {
             q = getTimeFromAngle(jd + i * 15.2, i * 15, 0);
-            q = q + J2000 + (double) 8 / 24; // 计算第i个节气(i=0是春风),结果转为北京时
+            q = q + J2000 + (double) 8 / 24; // 计算第i个节气(i=0是春分),结果转为北京时
             Time time = setFromJulian(q, true);
             solarTerms[i + 3] = time.toString() + SOLAR_TERMS[i];
         }
@@ -659,12 +659,12 @@ final class SolarTermUtil {
 
         @Override
         public String toString() {
-            return String.format("%s%s%s", doubleToString(year), doubleToString(month), doubleToString(day));
+            return  doubleToString(year) + doubleToString(month) + doubleToString(day);
         }
     }
 
     private static String doubleToString(double value) {
         int v = (int) value;
-        return value < 10 ? String.format("0%s", v) : String.valueOf(v);
+        return value < 10 ? "0" + v : String.valueOf(v);
     }
 }

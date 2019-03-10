@@ -1,12 +1,14 @@
-package com.haibin.calendarviewproject.meizu;
+package com.haibin.calendarviewproject.multi;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.haibin.calendarview.Calendar;
 import com.haibin.calendarview.CalendarLayout;
@@ -21,9 +23,11 @@ import com.haibin.calendarviewproject.group.GroupRecyclerView;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MeiZuActivity extends BaseActivity implements
-        CalendarView.OnCalendarSelectListener,
+public class MultiActivity extends BaseActivity implements
+        CalendarView.OnCalendarMultiSelectListener,
+        CalendarView.OnCalendarInterceptListener,
         CalendarView.OnYearChangeListener,
+        CalendarView.OnCalendarSelectListener,
         View.OnClickListener {
 
     TextView mTextMonthDay;
@@ -42,13 +46,13 @@ public class MeiZuActivity extends BaseActivity implements
     GroupRecyclerView mRecyclerView;
 
     public static void show(Context context) {
-        context.startActivity(new Intent(context, MeiZuActivity.class));
+        context.startActivity(new Intent(context, MultiActivity.class));
     }
 
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_meizu;
+        return R.layout.activity_multi;
     }
 
     @SuppressLint("SetTextI18n")
@@ -78,16 +82,33 @@ public class MeiZuActivity extends BaseActivity implements
             @Override
             public void onClick(View v) {
                 mCalendarView.scrollToCurrent();
+                //mCalendarView.setMaxMultiSelectSize(9);
+//                Calendar calendar = new Calendar();
+//                calendar.setYear(mCalendarView.getCurYear());
+//                calendar.setMonth(mCalendarView.getCurMonth());
+//                calendar.setDay(mCalendarView.getCurDay());
+//                mCalendarView.putMultiSelect(calendar);
+//                mCalendarView.removeMultiSelect(calendar);
+//                mCalendarView.getMultiSelectCalendars();
             }
         });
         mCalendarLayout = (CalendarLayout) findViewById(R.id.calendarLayout);
-        mCalendarView.setOnCalendarSelectListener(this);
+        mCalendarView.setOnCalendarMultiSelectListener(this);
         mCalendarView.setOnYearChangeListener(this);
+        mCalendarView.setOnCalendarSelectListener(this);
+        //设置日期拦截事件，当前有效
+        mCalendarView.setOnCalendarInterceptListener(this);
         mTextYear.setText(String.valueOf(mCalendarView.getCurYear()));
         mYear = mCalendarView.getCurYear();
         mTextMonthDay.setText(mCalendarView.getCurMonth() + "月" + mCalendarView.getCurDay() + "日");
         mTextLunar.setText("今日");
         mTextCurrentDay.setText(String.valueOf(mCalendarView.getCurDay()));
+        findViewById(R.id.iv_clear).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCalendarView.clearMultiSelect();
+            }
+        });
     }
 
     @Override
@@ -146,20 +167,30 @@ public class MeiZuActivity extends BaseActivity implements
 
 
     @Override
-    public void onCalendarOutOfRange(Calendar calendar) {
+    public void onCalendarMultiSelectOutOfRange(Calendar calendar) {
+        Log.e("OutOfRange", "OutOfRange" + calendar);
+    }
 
+    @Override
+    public void onMultiSelectOutOfSize(Calendar calendar, int maxSize) {
+        Toast.makeText(this, "超过最大选择数量 ：" + maxSize, Toast.LENGTH_SHORT).show();
     }
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onCalendarSelect(Calendar calendar, boolean isClick) {
+    public void onCalendarMultiSelect(Calendar calendar, int curSize, int maxSize) {
         mTextLunar.setVisibility(View.VISIBLE);
         mTextYear.setVisibility(View.VISIBLE);
         mTextMonthDay.setText(calendar.getMonth() + "月" + calendar.getDay() + "日");
         mTextYear.setText(String.valueOf(calendar.getYear()));
         mTextLunar.setText(calendar.getLunar());
         mYear = calendar.getYear();
+        Log.e("onDateSelected", "  -- " + calendar.getYear() +
+                "  --  " + calendar.getMonth() +
+                "  -- " + calendar.getDay() +
+                "  --  " + "  --   " + calendar.getScheme());
     }
+
 
     @Override
     public void onYearChange(int year) {
@@ -167,4 +198,39 @@ public class MeiZuActivity extends BaseActivity implements
     }
 
 
+    /**
+     * 屏蔽某些不可点击的日期，可根据自己的业务自行修改
+     * 如 calendar > 2018年1月1日 && calendar <= 2020年12月31日
+     *
+     * @param calendar calendar
+     * @return 是否屏蔽某些不可点击的日期，MonthView和WeekView有类似的API可调用
+     */
+    @Override
+    public boolean onCalendarIntercept(Calendar calendar) {
+        //Log.e("onCalendarIntercept", calendar.toString());
+        int day = calendar.getDay();
+//        return day == 1 || day == 3 || day == 6 || day == 11 ||
+//                day == 12 || day == 15 || day == 20 || day == 26;
+        return calendar.hasScheme();
+    }
+
+    @Override
+    public void onCalendarInterceptClick(Calendar calendar, boolean isClick) {
+        Toast.makeText(this,
+                calendar.toString() + (isClick ? "拦截不可点击" : "拦截设定为无效日期"),
+                Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onCalendarOutOfRange(Calendar calendar) {
+
+    }
+
+    @Override
+    public void onCalendarSelect(Calendar calendar, boolean isClick) {
+        Log.e("onDateSelected", "  -- " + calendar.getYear() +
+                "  --  " + calendar.getMonth() +
+                "  -- " + calendar.getDay() +
+                "  --  " + isClick + "  --   " + calendar.getScheme());
+    }
 }

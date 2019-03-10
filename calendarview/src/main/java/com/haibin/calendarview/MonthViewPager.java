@@ -25,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.lang.reflect.Constructor;
+import java.util.List;
 
 
 /**
@@ -110,7 +111,9 @@ public final class MonthViewPager extends ViewPager {
             @Override
             public void onPageSelected(int position) {
                 Calendar calendar = CalendarUtil.getFirstCalendarFromMonthViewPager(position, mDelegate);
-                mDelegate.mIndexCalendar = calendar;
+                if(getVisibility() == VISIBLE){
+                    mDelegate.mIndexCalendar = calendar;
+                }
                 //月份改变事件
                 if (mDelegate.mMonthChangeListener != null) {
                     mDelegate.mMonthChangeListener.onMonthChange(calendar.getYear(), calendar.getMonth());
@@ -342,6 +345,19 @@ public final class MonthViewPager extends ViewPager {
     }
 
     /**
+     * 获取当前月份数据
+     *
+     * @return 获取当前月份数据
+     */
+    List<Calendar> getCurrentMonthCalendars() {
+        BaseMonthView view = (BaseMonthView) findViewWithTag(getCurrentItem());
+        if (view == null) {
+            return null;
+        }
+        return view.mItems;
+    }
+
+    /**
      * 更新为默认选择模式
      */
     void updateDefaultSelect() {
@@ -474,6 +490,27 @@ public final class MonthViewPager extends ViewPager {
         }
     }
 
+    /**
+     * 清除单选选择
+     */
+    final void clearSingleSelect() {
+        for (int i = 0; i < getChildCount(); i++) {
+            BaseMonthView view = (BaseMonthView) getChildAt(i);
+            view.mCurrentItem = -1;
+            view.invalidate();
+        }
+    }
+
+    /**
+     * 清除单选选择
+     */
+    final void clearMultiSelect() {
+        for (int i = 0; i < getChildCount(); i++) {
+            BaseMonthView view = (BaseMonthView) getChildAt(i);
+            view.mCurrentItem = -1;
+            view.invalidate();
+        }
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     @Override

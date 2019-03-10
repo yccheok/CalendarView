@@ -25,8 +25,9 @@ import java.util.List;
  * 日历对象、
  */
 @SuppressWarnings("all")
-public final class Calendar implements Serializable {
+public final class Calendar implements Serializable, Comparable<Calendar> {
     private static final long serialVersionUID = 141315161718191143L;
+
 
     /**
      * 年
@@ -349,7 +350,7 @@ public final class Calendar implements Serializable {
      * @return 日期是否可用
      */
     public boolean isAvailable() {
-        return year > 0 & month > 0 & day > 0;
+        return year > 0 & month > 0 & day > 0 & day <=31 & month <= 12 & year >= 1900 & year <= 2099;
     }
 
     /**
@@ -379,6 +380,14 @@ public final class Calendar implements Serializable {
         return year + "" + (month < 10 ? "0" + month : month) + "" + (day < 10 ? "0" + day : day);
     }
 
+//    @Override
+//    public int compare(Calendar lhs, Calendar rhs) {
+//        if (lhs == null || rhs == null) {
+//            return 0;
+//        }
+//        int result = lhs.compareTo(rhs);
+//        return result;
+//    }
 
     final void mergeScheme(Calendar calendar, String defaultScheme) {
         if (calendar == null)
@@ -403,6 +412,7 @@ public final class Calendar implements Serializable {
         private int shcemeColor;
         private String scheme;
         private String other;
+        private Object obj;
 
         public Scheme() {
         }
@@ -463,5 +473,12 @@ public final class Calendar implements Serializable {
             this.type = type;
         }
 
+        public Object getObj() {
+            return obj;
+        }
+
+        public void setObj(Object obj) {
+            this.obj = obj;
+        }
     }
 }

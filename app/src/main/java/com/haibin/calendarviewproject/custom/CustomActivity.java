@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -68,7 +69,7 @@ public class CustomActivity extends BaseActivity implements
             @Override
             public void onClick(View v) {
                 if (!mCalendarLayout.isExpand()) {
-                    mCalendarView.showYearSelectLayout(mYear);
+                    mCalendarLayout.expand();
                     return;
                 }
                 mCalendarView.showYearSelectLayout(mYear);
@@ -174,6 +175,11 @@ public class CustomActivity extends BaseActivity implements
         mTextYear.setText(String.valueOf(calendar.getYear()));
         mTextLunar.setText(calendar.getLunar());
         mYear = calendar.getYear();
+
+        Log.e("onDateSelected", "  -- " + calendar.getYear() +
+                "  --  " + calendar.getMonth() +
+                "  -- " + calendar.getDay() +
+                "  --  " + isClick + "  --   " + calendar.getScheme());
     }
 
     @Override

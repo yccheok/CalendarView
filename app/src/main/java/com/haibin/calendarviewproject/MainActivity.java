@@ -13,13 +13,16 @@ import android.widget.Toast;
 import com.haibin.calendarview.Calendar;
 import com.haibin.calendarview.CalendarLayout;
 import com.haibin.calendarview.CalendarView;
+import com.haibin.calendarview.TrunkBranchAnnals;
 import com.haibin.calendarviewproject.base.activity.BaseActivity;
 import com.haibin.calendarviewproject.colorful.ColorfulActivity;
 import com.haibin.calendarviewproject.custom.CustomActivity;
+import com.haibin.calendarviewproject.full.FullActivity;
 import com.haibin.calendarviewproject.index.IndexActivity;
 import com.haibin.calendarviewproject.meizu.MeiZuActivity;
 import com.haibin.calendarviewproject.meizu.MeiZuMonthView;
 import com.haibin.calendarviewproject.meizu.MeizuWeekView;
+import com.haibin.calendarviewproject.multi.MultiActivity;
 import com.haibin.calendarviewproject.pager.ViewPagerActivity;
 import com.haibin.calendarviewproject.progress.ProgressActivity;
 import com.haibin.calendarviewproject.range.RangeActivity;
@@ -39,6 +42,7 @@ public class MainActivity extends BaseActivity implements
         CalendarView.OnWeekChangeListener,
         CalendarView.OnViewChangeListener,
         CalendarView.OnCalendarInterceptListener,
+        CalendarView.OnYearViewChangeListener,
         DialogInterface.OnClickListener,
         View.OnClickListener {
 
@@ -72,6 +76,7 @@ public class MainActivity extends BaseActivity implements
         mTextMonthDay = (TextView) findViewById(R.id.tv_month_day);
         mTextYear = (TextView) findViewById(R.id.tv_year);
         mTextLunar = (TextView) findViewById(R.id.tv_lunar);
+
         mRelativeTool = (RelativeLayout) findViewById(R.id.rl_tool);
         mCalendarView = (CalendarView) findViewById(R.id.calendarView);
         mTextCurrentDay = (TextView) findViewById(R.id.tv_current_day);
@@ -79,7 +84,7 @@ public class MainActivity extends BaseActivity implements
             @Override
             public void onClick(View v) {
                 if (!mCalendarLayout.isExpand()) {
-                    mCalendarView.showYearSelectLayout(mYear);
+                    mCalendarLayout.expand();
                     return;
                 }
                 mCalendarView.showYearSelectLayout(mYear);
@@ -123,8 +128,9 @@ public class MainActivity extends BaseActivity implements
                                 //mCalendarView.scrollToCalendar(2018,8,30);
                                 break;
                             case 5:
-                                mCalendarView.setRange(mCalendarView.getCurYear(), mCalendarView.getCurMonth(), 6,
-                                        mCalendarView.getCurYear(), mCalendarView.getCurMonth(), 23);
+                                mCalendarView.setRange(2016, 7, 1, 2016, 9, 28);
+//                                mCalendarView.setRange(mCalendarView.getCurYear(), mCalendarView.getCurMonth(), 6,
+//                                        mCalendarView.getCurYear(), mCalendarView.getCurMonth(), 23);
                                 break;
                             case 6:
                                 Log.e("scheme", "  " + mCalendarView.getSelectedCalendar().getScheme() + "  --  "
@@ -162,6 +168,7 @@ public class MainActivity extends BaseActivity implements
         mCalendarView.setOnMonthChangeListener(this);
         mCalendarView.setOnCalendarLongClickListener(this, true);
         mCalendarView.setOnWeekChangeListener(this);
+        mCalendarView.setOnYearViewChangeListener(this);
 
         //设置日期拦截事件，仅适用单选模式，当前无效
         mCalendarView.setOnCalendarInterceptListener(this);
@@ -256,10 +263,11 @@ public class MainActivity extends BaseActivity implements
         findViewById(R.id.ll_index).setOnClickListener(this);
         findViewById(R.id.ll_tab).setOnClickListener(this);
         findViewById(R.id.ll_single).setOnClickListener(this);
+        findViewById(R.id.ll_multi).setOnClickListener(this);
         findViewById(R.id.ll_solar_system).setOnClickListener(this);
         findViewById(R.id.ll_progress).setOnClickListener(this);
         findViewById(R.id.ll_custom).setOnClickListener(this);
-
+        findViewById(R.id.ll_full).setOnClickListener(this);
     }
 
     @Override
@@ -307,6 +315,9 @@ public class MainActivity extends BaseActivity implements
             case R.id.ll_custom:
                 CustomActivity.show(this);
                 break;
+            case R.id.ll_full:
+                FullActivity.show(this);
+                break;
             case R.id.ll_range:
                 RangeActivity.show(this);
                 break;
@@ -324,6 +335,9 @@ public class MainActivity extends BaseActivity implements
                 break;
             case R.id.ll_single:
                 SingleActivity.show(this);
+                break;
+            case R.id.ll_multi:
+                MultiActivity.show(this);
                 break;
             case R.id.ll_solar_system:
                 SolarActivity.show(this);
@@ -372,6 +386,7 @@ public class MainActivity extends BaseActivity implements
                 "  --  " + isClick + "  --   " + calendar.getScheme());
         Log.e("onDateSelected", "  " + mCalendarView.getSelectedCalendar().getScheme() +
                 "  --  " + mCalendarView.getSelectedCalendar().isCurrentDay());
+        Log.e("干支年纪 ： ", " -- " + TrunkBranchAnnals.getTrunkBranchYear(calendar.getLunarCalendar().getYear()));
     }
 
     @Override
@@ -397,7 +412,7 @@ public class MainActivity extends BaseActivity implements
     @SuppressLint("SetTextI18n")
     @Override
     public void onMonthChange(int year, int month) {
-        //Log.e("onMonthChange", "  -- " + year + "  --  " + month);
+        Log.e("onMonthChange", "  -- " + year + "  --  " + month);
         Calendar calendar = mCalendarView.getSelectedCalendar();
         mTextLunar.setVisibility(View.VISIBLE);
         mTextYear.setVisibility(View.VISIBLE);
@@ -409,7 +424,7 @@ public class MainActivity extends BaseActivity implements
 
     @Override
     public void onViewChange(boolean isMonthView) {
-        //Log.e("onViewChange", "  ---  " + (isMonthView ? "月视图" : "周视图"));
+        Log.e("onViewChange", "  ---  " + (isMonthView ? "月视图" : "周视图"));
     }
 
 
@@ -418,6 +433,11 @@ public class MainActivity extends BaseActivity implements
         for (Calendar calendar : weekCalendars) {
             Log.e("onWeekChange", calendar.toString());
         }
+    }
+
+    @Override
+    public void onYearViewChange(boolean isClose) {
+        Log.e("onYearViewChange", "年视图 -- " + (isClose ? "关闭" : "打开"));
     }
 
     /**

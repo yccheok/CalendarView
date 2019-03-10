@@ -29,6 +29,7 @@ final class LunarCalendar {
         if (MONTH_STR != null) {
             return;
         }
+        TrunkBranchAnnals.init(context);
         SolarTermUtil.init(context);
         MONTH_STR = context.getResources().getStringArray(R.array.lunar_first_of_month);
         TRADITION_FESTIVAL_STR = context.getResources().getStringArray(R.array.tradition_festival);
@@ -110,7 +111,7 @@ final class LunarCalendar {
      */
     private static String numToChineseMonth(int month, int leap) {
         if (leap == 1) {
-            return String.format("闰%s", MONTH_STR[month - 1]);
+            return "闰" + MONTH_STR[month - 1];
         }
         return MONTH_STR[month - 1];
     }
@@ -216,7 +217,7 @@ final class LunarCalendar {
             SOLAR_TERMS.put(year, SolarTermUtil.getSolarTerms(year));
         }
         String[] solarTerm = SOLAR_TERMS.get(year);
-        String text = String.format("%s%s", year, getString(month, day));
+        String text = year + getString(month, day);
         String solar = "";
         for (String solarTermName : solarTerm) {
             if (solarTermName.contains(text)) {
@@ -266,7 +267,7 @@ final class LunarCalendar {
             SPECIAL_FESTIVAL.put(year, getSpecialFestivals(year));
         }
         String[] specialFestivals = SPECIAL_FESTIVAL.get(year);
-        String text = String.format("%s%s", year, getString(month, day));
+        String text = year + getString(month, day);
         String solar = "";
         for (String special : specialFestivals) {
             if (special.contains(text)) {
@@ -318,7 +319,7 @@ final class LunarCalendar {
 
 
     private static String dateToString(int year, int month, int day) {
-        return String.format("%s%s", year, getString(month, day));
+        return year + getString(month, day);
     }
 
     /**
@@ -347,6 +348,7 @@ final class LunarCalendar {
         String solarTerm = LunarCalendar.getSolarTerm(year, month, day);
         String gregorian = LunarCalendar.gregorianFestival(month, day);
         String festival = getTraditionFestival(lunar[0], lunar[1], lunar[2]);
+        String lunarText = LunarCalendar.numToChinese(lunar[1], lunar[2], lunar[3]);
         if (TextUtils.isEmpty(gregorian)) {
             gregorian = getSpecialFestival(year, month, day);
         }
@@ -362,9 +364,9 @@ final class LunarCalendar {
         } else if (!TextUtils.isEmpty(festival)) {
             calendar.setLunar(festival);
         } else {
-            calendar.setLunar(LunarCalendar.numToChinese(lunar[1], lunar[2], lunar[3]));
+            calendar.setLunar(lunarText);
         }
-        lunarCalendar.setLunar(calendar.getLunar());
+        lunarCalendar.setLunar(lunarText);
     }
 
     /**
