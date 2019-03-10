@@ -1,5 +1,9 @@
 ﻿This file summarizes changes in CalendarView releases.
 
+1.2 - 2019-03-11
+================
+Feature: Merge with upstream's master.
+
 1.1 - 2019-01-02
 ================
 Bugfix:  Taiwan's father day is on 08/08.
