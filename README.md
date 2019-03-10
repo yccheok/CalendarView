@@ -1,6 +1,10 @@
 # CalenderView
 Android上一个优雅、高度自定义、性能高效的日历控件，完美支持周视图，支持标记、自定义颜色、农历等，任意控制月视图显示、任意日期拦截条件、自定义周起始等。Canvas绘制，极速性能、占用内存低，，支持简单定制即可实现任意自定义布局、自定义UI，支持收缩展开、性能非常高效，
-这个控件内存和效率优势相当明显，而且真正做到收缩+展开，适配多种场景，支持同时多种颜色标记日历事务，支持多点触控，你真的想不到日历还可以如此优雅！更多参考用法请移步Demo，Demo实现了4个精美的自定义效果。
+这个控件内存和效率优势相当明显，而且真正做到收缩+展开，适配多种场景，支持同时多种颜色标记日历事务，支持多点触控，你真的想不到日历还可以如此优雅！更多参考用法请移步Demo，Demo实现了一些精美的自定义效果，用法仅供参考。
+
+### 插拔式设计
+
+插拔式设计：好比插座一样，插上灯泡就会亮，插上风扇就会转，看用户需求什么而不是看插座有什么，只要是电器即可。此框架使用插拔式，既可以在编译时指定年月日视图，如：app:month_view="xxx.xxx.MonthView.class"，也可在运行时动态更换年月日视图，如：CalendarView.setMonthViewClass(MonthView.Class)，从而达到UI即插即用的效果，相当于框架不提供UI实现，让UI都由客户端实现，不至于日历UI都千篇一律，只需遵守插拔式接口即可随意定制，自由化程度非常高。
 
 [**English Version**](https://github.com/huanghaibin-dev/CalendarView/blob/master/README_EN.md)
 
@@ -8,13 +12,13 @@ Android上一个优雅、高度自定义、性能高效的日历控件，完美�
 
 ### Gradle
 ```
-compile 'com.haibin:calendarview:3.4.8'
+compile 'com.haibin:calendarview:3.5.5'
 ```
 ```
 <dependency>
   <groupId>com.haibin</groupId>
   <artifactId>calendarview</artifactId>
-  <version>3.4.8</version>
+  <version>3.5.5</version>
   <type>pom</type>
 </dependency>
 ```
@@ -27,7 +31,7 @@ compile 'com.haibin:calendarview:3.4.8'
 }
 ```
 
-### 或者针对性的使用混淆
+### 或者针对性的使用混淆，请自行配置测试！
 ``` java
 -keep class your project path.MonthView {
     public <init>(android.content.Context);
@@ -36,6 +40,9 @@ compile 'com.haibin:calendarview:3.4.8'
     public <init>(android.content.Context);
 }
 -keep class your project path.WeekView {
+    public <init>(android.content.Context);
+}
+-keep class your project path.YearView {
     public <init>(android.content.Context);
 }
 ```
@@ -49,8 +56,8 @@ compile 'com.haibin:calendarview:3.4.8'
 <img src="https://github.com/huanghaibin-dev/CalendarView/blob/master/app/src/main/assets/custom_expand.png" height="650"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://github.com/huanghaibin-dev/CalendarView/blob/master/app/src/main/assets/custom_shrink.png" height="650"/>
 ### 收缩展开的魅族风格效果
 <img src="https://github.com/huanghaibin-dev/CalendarView/blob/master/app/src/main/assets/meizu_expand.png" height="650"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://github.com/huanghaibin-dev/CalendarView/blob/master/app/src/main/assets/meizu_shrink.png" height="650"/>
-### 下标和多彩风格
-<img src="https://github.com/huanghaibin-dev/CalendarView/blob/master/app/src/main/assets/index_expand.png" height="650"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://github.com/huanghaibin-dev/CalendarView/blob/master/app/src/main/assets/color_expand.png" height="650"/>
+### 全屏和多彩风格
+<img src="https://github.com/huanghaibin-dev/CalendarView/blob/master/app/src/main/assets/full_calendar.png" height="650"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://github.com/huanghaibin-dev/CalendarView/blob/master/app/src/main/assets/color_expand.png" height="650"/>
 ### 进度条风格
 <img src="https://github.com/huanghaibin-dev/CalendarView/blob/master/app/src/main/assets/progress_expand.png" height="650"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://github.com/huanghaibin-dev/CalendarView/blob/master/app/src/main/assets/progress_shrink.png" height="650"/>
 ### 星系图风格
@@ -59,7 +66,7 @@ compile 'com.haibin:calendarview:3.4.8'
 ### 特别的，请注意不要复制这三个路径，自行替换您自己的自定义路径
 
 ```xml
-app:month_view="com.haibin.calendarviewproject.simple.SimpleCalendarCardView"
+app:month_view="com.haibin.calendarviewproject.simple.SimpleMonthView"
 app:week_view="com.haibin.calendarviewproject.simple.SimpleWeekView"
 app:week_bar_view="com.haibin.calendarviewproject.EnglishWeekBar"
 ```

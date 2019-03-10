@@ -24,6 +24,7 @@ import android.util.AttributeSet;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -74,7 +75,6 @@ final class CalendarViewDelegate {
     private int mMonthViewShowMode;
 
 
-
     /**
      * 默认选择模式
      */
@@ -89,6 +89,11 @@ final class CalendarViewDelegate {
      * 范围选择模式
      */
     static final int SELECT_MODE_RANGE = 2;
+
+    /**
+     * 多选模式
+     */
+    static final int SELECT_MODE_MULTI = 3;
 
     /**
      * 选择模式
@@ -153,6 +158,8 @@ final class CalendarViewDelegate {
     private int mYearViewMonthTextColor,
             mYearViewDayTextColor,
             mYearViewSchemeTextColor,
+            mYearViewSelectTextColor,
+            mYearViewCurDayTextColor,
             mYearViewWeekTextColor;
 
     /**
@@ -256,6 +263,11 @@ final class CalendarViewDelegate {
     private int mCalendarItemHeight;
 
     /**
+     * 是否是全屏日历
+     */
+    private boolean isFullScreenCalendar;
+
+    /**
      * 星期栏的高度
      */
     private int mWeekBarHeight;
@@ -295,6 +307,12 @@ final class CalendarViewDelegate {
      */
     CalendarView.OnCalendarRangeSelectListener mCalendarRangeSelectListener;
 
+
+    /**
+     * 多选选择事件
+     */
+    CalendarView.OnCalendarMultiSelectListener mCalendarMultiSelectListener;
+
     /**
      * 外部日期长按事件
      */
@@ -326,6 +344,12 @@ final class CalendarViewDelegate {
      */
     CalendarView.OnViewChangeListener mViewChangeListener;
 
+
+    /**
+     * 年视图改变事件
+     */
+    CalendarView.OnYearViewChangeListener mYearViewChangeListener;
+
     /**
      * 保存选中的日期
      */
@@ -336,6 +360,12 @@ final class CalendarViewDelegate {
      */
     Calendar mIndexCalendar;
 
+    /**
+     * 多选日历
+     */
+    Map<String, Calendar> mSelectedCalendars = new HashMap<>();
+
+    private int mMaxMultiSelectSize;
 
     /**
      * 选择范围日历
@@ -377,6 +407,7 @@ final class CalendarViewDelegate {
         mMonthViewShowMode = array.getInt(R.styleable.CalendarView_month_view_show_mode, MODE_ALL_MONTH);
         mWeekStart = array.getInt(R.styleable.CalendarView_week_start_with, WEEK_START_WITH_SUN);
         mSelectMode = array.getInt(R.styleable.CalendarView_select_mode, SELECT_MODE_DEFAULT);
+        mMaxMultiSelectSize = array.getInt(R.styleable.CalendarView_max_multi_select_size, Integer.MAX_VALUE);
         mMinSelectRange = array.getInt(R.styleable.CalendarView_min_select_range, -1);
         mMaxSelectRange = array.getInt(R.styleable.CalendarView_max_select_range, -1);
         setSelectRange(mMinSelectRange, mMaxSelectRange);
@@ -411,6 +442,7 @@ final class CalendarViewDelegate {
                 CalendarUtil.dipToPx(context, 10));
         mCalendarItemHeight = (int) array.getDimension(R.styleable.CalendarView_calendar_height,
                 CalendarUtil.dipToPx(context, 56));
+        isFullScreenCalendar = array.getBoolean(R.styleable.CalendarView_calendar_match_parent, false);
 
         //年视图相关
         mYearViewMonthTextSize = array.getDimensionPixelSize(R.styleable.CalendarView_year_view_month_text_size,
@@ -421,6 +453,8 @@ final class CalendarViewDelegate {
         mYearViewDayTextColor = array.getColor(R.styleable.CalendarView_year_view_day_text_color, 0xFF111111);
         mYearViewSchemeTextColor = array.getColor(R.styleable.CalendarView_year_view_scheme_color, mSchemeThemeColor);
         mYearViewWeekTextColor = array.getColor(R.styleable.CalendarView_year_view_week_text_color, 0xFF333333);
+        mYearViewCurDayTextColor = array.getColor(R.styleable.CalendarView_year_view_current_day_text_color, mCurDayTextColor);
+        mYearViewSelectTextColor = array.getColor(R.styleable.CalendarView_year_view_select_text_color, 0xFF333333);
         mYearViewWeekTextSize = array.getDimensionPixelSize(R.styleable.CalendarView_year_view_week_text_size,
                 CalendarUtil.dipToPx(context, 8));
         mYearViewMonthHeight = array.getDimensionPixelSize(R.styleable.CalendarView_year_view_month_height,
@@ -435,8 +469,8 @@ final class CalendarViewDelegate {
         mYearViewMonthMarginBottom = (int) array.getDimension(R.styleable.CalendarView_year_view_month_margin_bottom,
                 CalendarUtil.dipToPx(context, 4));
 
-        if (mMinYear <= MIN_YEAR) mMinYear = 1971;
-        if (mMaxYear >= MAX_YEAR) mMaxYear = 2055;
+        if (mMinYear <= MIN_YEAR) mMinYear = MIN_YEAR;
+        if (mMaxYear >= MAX_YEAR) mMaxYear = MAX_YEAR;
         array.recycle();
         init();
     }
@@ -451,35 +485,28 @@ final class CalendarViewDelegate {
         LunarCalendar.setupLunarCalendar(mCurrentDate);
         setRange(mMinYear, mMinYearMonth, mMaxYear, mMaxYearMonth);
 
-
         try {
-            if (!TextUtils.isEmpty(mWeekBarClassPath)) {
-                mWeekBarClass = Class.forName(mWeekBarClassPath);
-            } else {
-                mWeekBarClass = WeekBar.class;
-            }
+            mWeekBarClass = TextUtils.isEmpty(mWeekBarClassPath) ?
+                    mWeekBarClass = WeekBar.class : Class.forName(mWeekBarClassPath);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         try {
-            if (!TextUtils.isEmpty(mYearViewClassPath)) {
-                mYearViewClass = Class.forName(mYearViewClassPath);
-            } else {
-                mYearViewClass = DefaultYearView.class;
-            }
+            mYearViewClass = TextUtils.isEmpty(mYearViewClassPath) ?
+                    mYearViewClass = DefaultYearView.class : Class.forName(mYearViewClassPath);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        if (TextUtils.isEmpty(mMonthViewClassPath) || TextUtils.isEmpty(mWeekViewClassPath)) {
-            mMonthViewClass = DefaultMonthView.class;
-            mWeekViewClass = DefaultWeekView.class;
-            return;
+        try {
+            mMonthViewClass = TextUtils.isEmpty(mMonthViewClassPath) ?
+                    DefaultMonthView.class : Class.forName(mMonthViewClassPath);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         try {
-            mMonthViewClass = Class.forName(mMonthViewClassPath);
-            mWeekViewClass = Class.forName(mWeekViewClassPath);
+            mWeekViewClass = TextUtils.isEmpty(mWeekViewClassPath) ?
+                    DefaultWeekView.class : Class.forName(mWeekViewClassPath);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -510,9 +537,9 @@ final class CalendarViewDelegate {
         this.mMaxYear = maxYear;
         this.mMaxYearMonth = maxYearMonth;
         this.mMaxYearDay = maxYearDay;
-        if (this.mMaxYear < mCurrentDate.getYear()) {
-            this.mMaxYear = mCurrentDate.getYear();
-        }
+//        if (this.mMaxYear < mCurrentDate.getYear()) {
+//            this.mMaxYear = mCurrentDate.getYear();
+//        }
         if (this.mMaxYearDay == -1) {
             this.mMaxYearDay = CalendarUtil.getMonthDaysCount(this.mMaxYear, mMaxYearMonth);
         }
@@ -608,6 +635,10 @@ final class CalendarViewDelegate {
         return mYearViewClass;
     }
 
+    String getYearViewClassPath() {
+        return mYearViewClassPath;
+    }
+
     int getWeekBarHeight() {
         return mWeekBarHeight;
     }
@@ -659,6 +690,14 @@ final class CalendarViewDelegate {
 
     int getYearViewWeekTextColor() {
         return mYearViewWeekTextColor;
+    }
+
+    int getYearViewSelectTextColor() {
+        return mYearViewSelectTextColor;
+    }
+
+    int getYearViewCurDayTextColor() {
+        return mYearViewCurDayTextColor;
     }
 
     int getYearViewPadding() {
@@ -794,6 +833,14 @@ final class CalendarViewDelegate {
         return mMaxSelectRange;
     }
 
+    int getMaxMultiSelectSize() {
+        return mMaxMultiSelectSize;
+    }
+
+    void setMaxMultiSelectSize(int maxMultiSelectSize) {
+        this.mMaxMultiSelectSize = maxMultiSelectSize;
+    }
+
     final void setSelectRange(int minRange, int maxRange) {
         if (minRange > maxRange && maxRange > 0) {
             mMaxSelectRange = minRange;
@@ -861,6 +908,10 @@ final class CalendarViewDelegate {
         return mMaxYearDay;
     }
 
+    boolean isFullScreenCalendar() {
+        return isFullScreenCalendar;
+    }
+
     final void updateSelectCalendarScheme() {
         if (mSchemeDatesMap != null && mSchemeDatesMap.size() > 0) {
             String key = mSelectedCalendar.toString();
@@ -868,6 +919,22 @@ final class CalendarViewDelegate {
                 Calendar d = mSchemeDatesMap.get(key);
                 mSelectedCalendar.mergeScheme(d, getSchemeText());
             }
+        } else {
+            clearSelectedScheme();
+        }
+    }
+
+    final void updateCalendarScheme(Calendar targetCalendar) {
+        if (targetCalendar == null) {
+            return;
+        }
+        if (mSchemeDatesMap == null || mSchemeDatesMap.size() == 0) {
+            return;
+        }
+        String key = targetCalendar.toString();
+        if (mSchemeDatesMap.containsKey(key)) {
+            Calendar d = mSchemeDatesMap.get(key);
+            targetCalendar.mergeScheme(d, getSchemeText());
         }
     }
 

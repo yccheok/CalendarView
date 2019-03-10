@@ -366,6 +366,22 @@ public final class WeekViewPager extends ViewPager {
         }
     }
 
+    final void clearSingleSelect() {
+        for (int i = 0; i < getChildCount(); i++) {
+            BaseWeekView view = (BaseWeekView) getChildAt(i);
+            view.mCurrentItem = -1;
+            view.invalidate();
+        }
+    }
+
+    final void clearMultiSelect() {
+        for (int i = 0; i < getChildCount(); i++) {
+            BaseWeekView view = (BaseWeekView) getChildAt(i);
+            view.mCurrentItem = -1;
+            view.invalidate();
+        }
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
