@@ -1,5 +1,9 @@
 ﻿This file summarizes changes in CalendarView releases.
 
+1.3 - 2019-03-27
+================
+Feature: Merge with upstream's master.
+
 1.2 - 2019-03-11
 ================
 Feature: Merge with upstream's master.
