@@ -82,6 +82,11 @@ public class CustomActivity extends BaseActivity implements
             @Override
             public void onClick(View v) {
                 mCalendarView.scrollToCurrent();
+//                if(mCalendarLayout.isExpand()){
+//                    mCalendarLayout.shrink();
+//                }else {
+//                    mCalendarLayout.expand();
+//                }
             }
         });
         mCalendarLayout = (CalendarLayout) findViewById(R.id.calendarLayout);
