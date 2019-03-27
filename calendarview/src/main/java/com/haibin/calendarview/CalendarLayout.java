@@ -268,11 +268,11 @@ public class CalendarLayout extends LinearLayout {
      * 隐藏日历
      */
     public void hideCalendarView() {
-        if(mCalendarView == null){
+        if (mCalendarView == null) {
             return;
         }
         mCalendarView.setVisibility(GONE);
-        if(!isExpand()){
+        if (!isExpand()) {
             expand(0);
         }
         requestLayout();
@@ -476,24 +476,37 @@ public class CalendarLayout extends LinearLayout {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 
-        if (mContentView == null || mCalendarView == null) {
+        if (mContentView == null || mCalendarView == null ) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
             return;
         }
 
         int year = mDelegate.mIndexCalendar.getYear();
         int month = mDelegate.mIndexCalendar.getMonth();
+        int weekBarHeight = CalendarUtil.dipToPx(getContext(), 1)
+                + mDelegate.getWeekBarHeight();
 
         int monthHeight = CalendarUtil.getMonthViewHeight(year, month,
                 mDelegate.getCalendarItemHeight(),
-                mDelegate.getWeekStart()) + CalendarUtil.dipToPx(getContext(), 41);
+                mDelegate.getWeekStart(),
+                mDelegate.getMonthViewShowMode())
+                + weekBarHeight;
 
         int height = MeasureSpec.getSize(heightMeasureSpec);
+
+        if(mDelegate.isFullScreenCalendar()){
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+            int heightSpec = MeasureSpec.makeMeasureSpec(height - weekBarHeight - mDelegate.getCalendarItemHeight(),
+                    MeasureSpec.EXACTLY);
+            mContentView.measure(widthMeasureSpec, heightSpec);
+            mContentView.layout(mContentView.getLeft(), mContentView.getTop(), mContentView.getRight(), mContentView.getBottom());
+            return;
+        }
 
         if (monthHeight >= height && mMonthView.getHeight() > 0) {
             height = monthHeight;
             heightMeasureSpec = MeasureSpec.makeMeasureSpec(monthHeight +
-                    CalendarUtil.dipToPx(getContext(), 41) +
+                    weekBarHeight +
                     mDelegate.getWeekBarHeight(), MeasureSpec.EXACTLY);
         } else if (monthHeight < height && mMonthView.getHeight() > 0) {
             heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
@@ -503,11 +516,14 @@ public class CalendarLayout extends LinearLayout {
         if (mCalendarShowMode == CALENDAR_SHOW_MODE_ONLY_MONTH_VIEW ||
                 mCalendarView.getVisibility() == GONE) {
             h = height - (mCalendarView.getVisibility() == GONE ? 0 : mCalendarView.getHeight());
+        } else if (mGestureMode == GESTURE_MODE_DISABLED && !isAnimating) {
+            if (isExpand()) {
+                h = height - monthHeight;
+            } else {
+                h = height - weekBarHeight - mItemHeight;
+            }
         } else {
-            h = height - mItemHeight
-                    - (mDelegate != null ? mDelegate.getWeekBarHeight() :
-                    CalendarUtil.dipToPx(getContext(), 40))
-                    - CalendarUtil.dipToPx(getContext(), 1);
+            h = height - weekBarHeight - mItemHeight;
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int heightSpec = MeasureSpec.makeMeasureSpec(h,
@@ -640,6 +656,9 @@ public class CalendarLayout extends LinearLayout {
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
                 isAnimating = false;
+                if (mGestureMode == GESTURE_MODE_DISABLED) {
+                    requestLayout();
+                }
                 hideWeek(true);
                 if (mDelegate.mViewChangeListener != null && isWeekView) {
                     mDelegate.mViewChangeListener.onViewChange(true);
@@ -664,6 +683,9 @@ public class CalendarLayout extends LinearLayout {
      * @return 成功或者失败
      */
     public boolean shrink(int duration) {
+        if (mGestureMode == GESTURE_MODE_DISABLED) {
+            requestLayout();
+        }
         if (isAnimating || mContentView == null) {
             return false;
         }

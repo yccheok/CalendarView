@@ -24,7 +24,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-final class LunarCalendar {
+/**
+ * 农历计算相关
+ */
+@SuppressWarnings("all")
+public final class LunarCalendar {
 
 
     static void init(Context context) {
@@ -239,7 +243,7 @@ final class LunarCalendar {
      * @param day   日
      * @return 农历节日
      */
-    private static String getLunarText(int year, int month, int day) {
+    public static String getLunarText(int year, int month, int day) {
         String termText = LunarCalendar.getSolarTerm(year, month, day);
         String solar = LunarCalendar.gregorianFestival(month, day);
         if (!TextUtils.isEmpty(solar))
@@ -338,7 +342,7 @@ final class LunarCalendar {
      *
      * @param calendar calendar
      */
-    static void setupLunarCalendar(Calendar calendar) {
+    public static void setupLunarCalendar(Calendar calendar) {
         int year = calendar.getYear();
         int month = calendar.getMonth();
         int day = calendar.getDay();
@@ -386,7 +390,7 @@ final class LunarCalendar {
      * @param calendar calendar
      * @return 获取农历节日
      */
-    static String getLunarText(Calendar calendar) {
+    public static String getLunarText(Calendar calendar) {
         return getLunarText(calendar.getYear(), calendar.getMonth(), calendar.getDay());
     }
 }

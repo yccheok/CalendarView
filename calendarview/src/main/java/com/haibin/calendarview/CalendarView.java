@@ -224,8 +224,8 @@ public class CalendarView extends FrameLayout {
             @Override
             public void onMonthSelected(int year, int month) {
                 int position = 12 * (year - mDelegate.getMinYear()) + month - mDelegate.getMinYearMonth();
-                mDelegate.isShowYearSelectedLayout = false;
                 closeSelectLayout(position);
+                mDelegate.isShowYearSelectedLayout = false;
             }
         });
         mYearViewPager.setup(mDelegate);
@@ -1184,13 +1184,14 @@ public class CalendarView extends FrameLayout {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int height = MeasureSpec.getSize(heightMeasureSpec);
-        if (mDelegate == null || height == 0 ||
+        if (mDelegate == null ||
                 !mDelegate.isFullScreenCalendar()) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
             return;
         }
         setCalendarItemHeight((height -
-                mDelegate.getWeekBarHeight() ) / 6);
+                mDelegate.getWeekBarHeight()) / 6);
+
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 

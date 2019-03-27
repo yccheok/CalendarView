@@ -108,6 +108,21 @@ final class CalendarUtil {
         return (preDiff + monthDaysCount + nextDiff) / 7 * itemHeight;
     }
 
+    /**
+     * 获取月视图的确切高度
+     * Test pass
+     *
+     * @param year       年
+     * @param month      月
+     * @param itemHeight 每项的高度
+     * @return 不需要多余行的高度
+     */
+    static int getMonthViewHeight(int year, int month, int itemHeight, int weekStartWith, int mode) {
+        if (mode == CalendarViewDelegate.MODE_ALL_MONTH) {
+            return itemHeight * 6;
+        }
+        return getMonthViewHeight(year, month, itemHeight, weekStartWith);
+    }
 
     /**
      * 获取某天在该月的第几周,换言之就是获取这一天在该月视图的第几行,第几周，根据周起始动态获取
@@ -187,29 +202,6 @@ final class CalendarUtil {
         return week == CalendarViewDelegate.WEEK_START_WITH_SAT ? 0 : week;
     }
 
-
-    /**
-     * DAY_OF_WEEK return  1  2  3 	4  5  6	 7，偏移了一位
-     * 获取日期所在月份的结束偏移量，用于计算两个年份之间总共有多少周，不用于MonthView
-     * Test pass
-     *
-     * @param calendar  calendar
-     * @param weekStart weekStart 星期的起始
-     * @return 获取日期所在月份的结束偏移量 the end diff in Month not MonthView
-     */
-    @SuppressWarnings("unused")
-    static int getMonthEndDiff(Calendar calendar, int weekStart) {
-        java.util.Calendar date = java.util.Calendar.getInstance();
-        date.set(calendar.getYear(), calendar.getMonth() - 1, getMonthDaysCount(calendar.getYear(), calendar.getMonth()));
-        int week = date.get(java.util.Calendar.DAY_OF_WEEK);
-        if (weekStart == CalendarViewDelegate.WEEK_START_WITH_SUN) {
-            return 7 - week;
-        }
-        if (weekStart == CalendarViewDelegate.WEEK_START_WITH_MON) {
-            return week == 1 ? 0 : 7 - week + 1;
-        }
-        return week == CalendarViewDelegate.WEEK_START_WITH_SAT ? 6 : 7 - week - 1;
-    }
 
     /**
      * DAY_OF_WEEK return  1  2  3 	4  5  6	 7，偏移了一位
@@ -473,6 +465,7 @@ final class CalendarUtil {
     /**
      * 运算 calendar1 - calendar2
      * test Pass
+     *
      * @param calendar1 calendar1
      * @param calendar2 calendar2
      * @return calendar1 - calendar2
