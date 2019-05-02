@@ -1,5 +1,9 @@
 ﻿This file summarizes changes in CalendarView releases.
 
+1.5 - 2019-05-02
+================
+Feature: Japanese translation.
+
 1.4 - 2019-04-09
 ================
 Feature: Merge with upstream's master.
