@@ -1,5 +1,11 @@
 ﻿This file summarizes changes in CalendarView releases.
 
+1.8 - 2019-07-19
+================
+Bugfix:  在还原时，expand/shrink 是用延迟 (post + animation) 的方法执行。所以，
+         即时呼叫 isExpand，并不能给予正确的答案。可否改进？谢谢
+Bugfix:  Year draw priority will be given to isCurrentDay and hasScheme.
+
 1.7 - 2019-07-15
 ================
 Bugfix:  NPE fix.
