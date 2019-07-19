@@ -597,13 +597,15 @@ public class CalendarLayout extends LinearLayout {
                 }
             });
         } else {
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    shrink(0);
-                }
-            });
+            //post(new Runnable() {
+            //    @Override
+            //    public void run() {
+            //        shrink(0);
+            //    }
+            //});
 
+            // https://github.com/huanghaibin-dev/CalendarView/issues/505
+            showWeek();
         }
         super.onRestoreInstanceState(superData);
     }
