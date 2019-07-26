@@ -1,5 +1,9 @@
 ﻿This file summarizes changes in CalendarView releases.
 
+1.10 - 2019-07-26
+=================
+Bugfix:  NPE fix.
+
 1.9 - 2019-07-22
 ================
 Bugfix:  NPE fix.
