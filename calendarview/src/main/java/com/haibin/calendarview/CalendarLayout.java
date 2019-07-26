@@ -809,7 +809,7 @@ public class CalendarLayout extends LinearLayout {
         if (mMonthView.getVisibility() == VISIBLE) {
             return;
         }
-        if (mDelegate.mViewChangeListener != null && isWeekView) {
+        if (mDelegate != null && mDelegate.mViewChangeListener != null && isWeekView) {
             mDelegate.mViewChangeListener.onViewChange(true);
         }
     }
