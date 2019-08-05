@@ -500,7 +500,11 @@ public class CalendarLayout extends LinearLayout {
             int heightSpec = MeasureSpec.makeMeasureSpec(height - weekBarHeight - mDelegate.getCalendarItemHeight(),
                     MeasureSpec.EXACTLY);
             mContentView.measure(widthMeasureSpec, heightSpec);
-            mContentView.layout(mContentView.getLeft(), mContentView.getTop(), mContentView.getRight(), mContentView.getBottom());
+            try {
+                mContentView.layout(mContentView.getLeft(), mContentView.getTop(), mContentView.getRight(), mContentView.getBottom());
+            } catch (ArrayIndexOutOfBoundsException e) {
+                e.printStackTrace();
+            }
             return;
         }
 
