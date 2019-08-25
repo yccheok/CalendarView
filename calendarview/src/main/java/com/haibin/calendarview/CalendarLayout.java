@@ -502,7 +502,7 @@ public class CalendarLayout extends LinearLayout {
             mContentView.measure(widthMeasureSpec, heightSpec);
             try {
                 mContentView.layout(mContentView.getLeft(), mContentView.getTop(), mContentView.getRight(), mContentView.getBottom());
-            } catch (ArrayIndexOutOfBoundsException | IndexOutOfBoundsException e) {
+            } catch (IndexOutOfBoundsException e) {
                 e.printStackTrace();
             }
             return;
