@@ -1,5 +1,9 @@
 ﻿This file summarizes changes in CalendarView releases.
 
+1.12 - 2019-07-26
+=================
+Bugfix:  IndexOutOfBoundsException fix.
+
 1.11 - 2019-07-26
 =================
 Bugfix:  ArrayIndexOutOfBoundsException fix.
