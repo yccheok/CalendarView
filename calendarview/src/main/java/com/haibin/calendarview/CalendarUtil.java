@@ -638,7 +638,9 @@ final class CalendarUtil {
         date.set(calendar.getYear(), calendar.getMonth() - 1, calendar.getDay());
         long curDateMills = date.getTimeInMillis();//生成选择的日期时间戳
 
-        int weekEndDiff = getWeekViewEndDiff(calendar.getYear(), calendar.getMonth(), calendar.getDay(), weekStart);
+        //int weekEndDiff = getWeekViewEndDiff(calendar.getYear(), calendar.getMonth(), calendar.getDay(), weekStart);
+        int weekEndDiff = 6;
+        
         List<Calendar> mItems = new ArrayList<>();
 
         date.setTimeInMillis(curDateMills);

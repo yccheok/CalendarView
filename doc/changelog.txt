@@ -1,5 +1,9 @@
 ﻿This file summarizes changes in CalendarView releases.
 
+1.14 - 2020-04-12
+=================
+Bugfix:  Temporary fix on day light saving bug - https://github.com/huanghaibin-dev/CalendarView/issues/644
+
 1.13 - 2019-08-25
 =================
 Bugfix:  IndexOutOfBoundsException fix.
