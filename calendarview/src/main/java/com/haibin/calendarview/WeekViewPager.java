@@ -477,4 +477,9 @@ public final class WeekViewPager extends ViewPager {
             container.removeView(view);
         }
     }
+
+    @Override
+    public boolean canScrollHorizontally(int direction) {
+        return mDelegate.isWeekViewScrollable() && super.canScrollHorizontally(direction);
+    }
 }
