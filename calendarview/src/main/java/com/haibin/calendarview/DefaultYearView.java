@@ -72,11 +72,9 @@ public class DefaultYearView extends YearView {
         float baselineY = mTextBaseLine + y;
         int cx = x + mItemWidth / 2;
 
-        if (isSelected) {
-            canvas.drawText(String.valueOf(calendar.getDay()),
-                    cx,
-                    baselineY,
-                    hasScheme ? mSchemeTextPaint : mSelectTextPaint);
+        if (calendar.isCurrentDay()) {
+            canvas.drawText(String.valueOf(calendar.getDay()), cx, baselineY,
+                    mCurDayTextPaint);
         } else if (hasScheme) {
             canvas.drawText(String.valueOf(calendar.getDay()),
                     cx,
@@ -84,10 +82,14 @@ public class DefaultYearView extends YearView {
                     calendar.isCurrentDay() ? mCurDayTextPaint :
                             calendar.isCurrentMonth() ? mSchemeTextPaint : mOtherMonthTextPaint);
 
+        } else if (isSelected) {
+            canvas.drawText(String.valueOf(calendar.getDay()),
+                    cx,
+                    baselineY,
+                    hasScheme ? mSchemeTextPaint : mSelectTextPaint);
         } else {
             canvas.drawText(String.valueOf(calendar.getDay()), cx, baselineY,
-                    calendar.isCurrentDay() ? mCurDayTextPaint :
-                            calendar.isCurrentMonth() ? mCurMonthTextPaint : mOtherMonthTextPaint);
+                    calendar.isCurrentMonth() ? mCurMonthTextPaint : mOtherMonthTextPaint);
         }
     }
 }
