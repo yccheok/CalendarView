@@ -1,0 +1,8 @@
+This file summarizes changes in CalendarView releases.
+
+2.0 - 2020-09-24
+=================
+Bugfix:  Carry over all changes from unofficial branch.
+Bugfix:  Fix DST. (Picked from upstream)
+Bugfix:  Fix lunar calendar calculation. (Picked from upstream)
+Bugfix:  Upgrade to latest gradle.
