@@ -29,13 +29,6 @@ public class SingleWeekView extends WeekView {
 
     public SingleWeekView(Context context) {
         super(context);
-        //兼容硬件加速无效的代码
-        setLayerType(View.LAYER_TYPE_SOFTWARE, mSelectedPaint);
-        //4.0以上硬件加速会导致无效
-        mSelectedPaint.setMaskFilter(new BlurMaskFilter(30, BlurMaskFilter.Blur.SOLID));
-
-        setLayerType(View.LAYER_TYPE_SOFTWARE, mSchemePaint);
-        mSchemePaint.setMaskFilter(new BlurMaskFilter(30, BlurMaskFilter.Blur.SOLID));
 
         mRingPaint.setAntiAlias(true);
         mRingPaint.setColor(mSchemePaint.getColor());
@@ -123,7 +116,6 @@ public class SingleWeekView extends WeekView {
      * @param dpValue dp
      * @return px
      */
-    @SuppressWarnings("all")
     private static int dipToPx(Context context, float dpValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);

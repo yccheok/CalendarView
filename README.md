@@ -10,21 +10,28 @@ You can't think of the calendar can be so elegant!
 
 <img src="https://github.com/huanghaibin-dev/CalendarView/blob/master/app/src/main/assets/screen_recorder_range.gif" height="650"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="https://github.com/huanghaibin-dev/CalendarView/blob/master/app/src/main/assets/screen_recorder_multi.gif" height="650"/>
 
-### Gradle
+### AndroidStudio v3.5+
+
+### support version if using support package
 ```
-compile 'com.haibin:calendarview:3.5.8'
+implementation 'com.haibin:calendarview:3.6.8'
+```
+
+### Androidx version if using Androidx
+```
+implementation 'com.haibin:calendarview:3.6.9'
 ```
 
 ```
 <dependency>
   <groupId>com.haibin</groupId>
   <artifactId>calendarview</artifactId>
-  <version>3.5.8</version>
+  <version>3.6.9</version>
   <type>pom</type>
 </dependency>
 ```
 
-# How to use?
+## How to use?
 
 [**English Doc**](https://github.com/huanghaibin-dev/CalendarView/blob/master/QUESTION.md)
 

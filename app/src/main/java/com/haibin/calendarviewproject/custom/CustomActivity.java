@@ -3,7 +3,7 @@ package com.haibin.calendarviewproject.custom;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -59,12 +59,12 @@ public class CustomActivity extends BaseActivity implements
     @Override
     protected void initView() {
         setStatusBarDarkMode();
-        mTextMonthDay = (TextView) findViewById(R.id.tv_month_day);
-        mTextYear = (TextView) findViewById(R.id.tv_year);
-        mTextLunar = (TextView) findViewById(R.id.tv_lunar);
-        mRelativeTool = (RelativeLayout) findViewById(R.id.rl_tool);
-        mCalendarView = (CalendarView) findViewById(R.id.calendarView);
-        mTextCurrentDay = (TextView) findViewById(R.id.tv_current_day);
+        mTextMonthDay = findViewById(R.id.tv_month_day);
+        mTextYear = findViewById(R.id.tv_year);
+        mTextLunar = findViewById(R.id.tv_lunar);
+        mRelativeTool = findViewById(R.id.rl_tool);
+        mCalendarView =  findViewById(R.id.calendarView);
+        mTextCurrentDay =  findViewById(R.id.tv_current_day);
         mTextMonthDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,14 +82,22 @@ public class CustomActivity extends BaseActivity implements
             @Override
             public void onClick(View v) {
                 mCalendarView.scrollToCurrent();
-//                if(mCalendarLayout.isExpand()){
-//                    mCalendarLayout.shrink();
-//                }else {
-//                    mCalendarLayout.expand();
-//                }
+                //mCalendarView.addSchemeDate(getSchemeCalendar(2019, 6, 1, 0xFF40db25, "假"));
+//                int year = 2019;
+//                int month = 6;
+//                Map<String, Calendar> map = new HashMap<>();
+//                map.put(getSchemeCalendar(year, month, 3, 0xFF40db25, "假").toString(),
+//                        getSchemeCalendar(year, month, 3, 0xFF40db25, "假"));
+//                map.put(getSchemeCalendar(year, month, 6, 0xFFe69138, "事").toString(),
+//                        getSchemeCalendar(year, month, 6, 0xFFe69138, "事"));
+//                map.put(getSchemeCalendar(year, month, 9, 0xFFdf1356, "议").toString(),
+//                        getSchemeCalendar(year, month, 9, 0xFFdf1356, "议"));
+//                map.put(getSchemeCalendar(year, month, 13, 0xFFedc56d, "记").toString(),
+//                        getSchemeCalendar(year, month, 13, 0xFFedc56d, "记"));
+//                mCalendarView.addSchemeDate(map);
             }
         });
-        mCalendarLayout = (CalendarLayout) findViewById(R.id.calendarLayout);
+        mCalendarLayout = findViewById(R.id.calendarLayout);
         mCalendarView.setOnCalendarSelectListener(this);
         mCalendarView.setOnYearChangeListener(this);
         mTextYear.setText(String.valueOf(mCalendarView.getCurYear()));
@@ -127,7 +135,7 @@ public class CustomActivity extends BaseActivity implements
         mCalendarView.setSchemeDate(map);
 
 
-        mRecyclerView = (GroupRecyclerView) findViewById(R.id.recyclerView);
+        mRecyclerView = findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.addItemDecoration(new GroupItemDecoration<String, Article>());
         mRecyclerView.setAdapter(new ArticleAdapter(this));

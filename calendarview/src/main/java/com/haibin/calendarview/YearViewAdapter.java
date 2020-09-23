@@ -16,10 +16,11 @@
 package com.haibin.calendarview;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.lang.reflect.Constructor;
 
@@ -71,7 +72,6 @@ final class YearViewAdapter extends BaseRecyclerAdapter<Month> {
 
     private static class YearViewHolder extends RecyclerView.ViewHolder {
         YearView mYearView;
-
         YearViewHolder(View itemView, CalendarViewDelegate delegate) {
             super(itemView);
             mYearView = (YearView) itemView;

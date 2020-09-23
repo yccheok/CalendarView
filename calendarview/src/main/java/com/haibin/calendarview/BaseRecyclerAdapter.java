@@ -16,10 +16,12 @@
 package com.haibin.calendarview;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,8 +52,10 @@ abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter {
 
     }
 
+    @SuppressWarnings("ConstantConditions")
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         final RecyclerView.ViewHolder holder = onCreateDefaultViewHolder(parent, viewType);
         if (holder != null) {
             holder.itemView.setTag(holder);
@@ -61,7 +65,7 @@ abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         onBindViewHolder(holder, mItems.get(position), position);
     }
 

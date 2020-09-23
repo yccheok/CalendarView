@@ -1,10 +1,8 @@
 package com.haibin.calendarviewproject.meizu;
 
 import android.content.Context;
-import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.view.View;
 
 import com.haibin.calendarview.Calendar;
 import com.haibin.calendarview.MonthView;
@@ -46,10 +44,10 @@ public class MeiZuMonthView extends MonthView {
         Paint.FontMetrics metrics = mSchemeBasicPaint.getFontMetrics();
         mSchemeBaseLine = mRadio - metrics.descent + (metrics.bottom - metrics.top) / 2 + dipToPx(getContext(), 1);
 
-        //兼容硬件加速无效的代码
-        setLayerType(View.LAYER_TYPE_SOFTWARE, mSchemeBasicPaint);
-        //4.0以上硬件加速会导致无效
-        mSchemeBasicPaint.setMaskFilter(new BlurMaskFilter(25, BlurMaskFilter.Blur.SOLID));
+//        //兼容硬件加速无效的代码
+//        setLayerType(View.LAYER_TYPE_SOFTWARE, mSchemeBasicPaint);
+//        //4.0以上硬件加速会导致无效
+//        mSchemeBasicPaint.setMaskFilter(new BlurMaskFilter(25, BlurMaskFilter.Blur.SOLID));
     }
 
     /**
@@ -102,6 +100,7 @@ public class MeiZuMonthView extends MonthView {
      * @param hasScheme  是否是标记的日期
      * @param isSelected 是否选中
      */
+    @SuppressWarnings("IntegerDivisionInFloatingPointContext")
     @Override
     protected void onDrawText(Canvas canvas, Calendar calendar, int x, int y, boolean hasScheme, boolean isSelected) {
         int cx = x + mItemWidth / 2;

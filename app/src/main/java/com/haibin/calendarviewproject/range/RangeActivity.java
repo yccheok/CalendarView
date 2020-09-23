@@ -20,6 +20,7 @@ import java.util.Map;
 public class RangeActivity extends BaseActivity implements
         CalendarView.OnCalendarInterceptListener,
         CalendarView.OnCalendarRangeSelectListener,
+        CalendarView.OnMonthChangeListener,
         View.OnClickListener {
 
     TextView mTextLeftDate;
@@ -49,17 +50,17 @@ public class RangeActivity extends BaseActivity implements
     @Override
     protected void initView() {
         setStatusBarDarkMode();
-        mTextLeftDate = (TextView) findViewById(R.id.tv_left_date);
-        mTextLeftWeek = (TextView) findViewById(R.id.tv_left_week);
-        mTextRightDate = (TextView) findViewById(R.id.tv_right_date);
-        mTextRightWeek = (TextView) findViewById(R.id.tv_right_week);
+        mTextLeftDate = findViewById(R.id.tv_left_date);
+        mTextLeftWeek = findViewById(R.id.tv_left_week);
+        mTextRightDate = findViewById(R.id.tv_right_date);
+        mTextRightWeek = findViewById(R.id.tv_right_week);
 
-        mTextMinRange = (TextView) findViewById(R.id.tv_min_range);
-        mTextMaxRange = (TextView) findViewById(R.id.tv_max_range);
+        mTextMinRange = findViewById(R.id.tv_min_range);
+        mTextMaxRange = findViewById(R.id.tv_max_range);
 
-        mCalendarView = (CalendarView) findViewById(R.id.calendarView);
+        mCalendarView = findViewById(R.id.calendarView);
         mCalendarView.setOnCalendarRangeSelectListener(this);
-
+        mCalendarView.setOnMonthChangeListener(this);
         //设置日期拦截事件，当前有效
         mCalendarView.setOnCalendarInterceptListener(this);
 
@@ -70,8 +71,17 @@ public class RangeActivity extends BaseActivity implements
 
         mCalendarHeight = dipToPx(this, 46);
 
-//        mCalendarView.setRange(mCalendarView.getCurYear(), mCalendarView.getCurMonth(), mCalendarView.getCurDay(),
-//                mCalendarView.getCurYear() + 2, 12, 31);
+        mCalendarView.setRange(2000, 1, 1,
+
+                mCalendarView.getCurYear(), mCalendarView.getCurMonth(), mCalendarView.getCurDay()
+
+                );
+        mCalendarView.post(new Runnable() {
+            @Override
+            public void run() {
+                mCalendarView.scrollToCurrent();
+            }
+        });
     }
 
     @Override
@@ -183,11 +193,17 @@ public class RangeActivity extends BaseActivity implements
      */
     @Override
     public boolean onCalendarIntercept(Calendar calendar) {
-        //Log.e("onCalendarIntercept", calendar.toString());
-//        int day = calendar.getDay();
-//        return day == 1 || day == 3 || day == 6 || day == 11 ||
-//                day == 12 || day == 15 || day == 20 || day == 26;
-        return calendar.hasScheme();
+        return false;
+        //return calendar.getTimeInMillis()<getCurrentDayMill() ;
+    }
+
+
+    private long getCurrentDayMill(){
+        java.util.Calendar calendar = java.util.Calendar.getInstance();
+        calendar.set(java.util.Calendar.HOUR,0);
+        calendar.set(java.util.Calendar.MINUTE,0);
+        calendar.set(java.util.Calendar.MILLISECOND,0);
+        return calendar.getTimeInMillis();
     }
 
     @Override
@@ -197,6 +213,10 @@ public class RangeActivity extends BaseActivity implements
                 Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void onMonthChange(int year, int month) {
+        Log.e("onMonthChange", "  -- " + year + "  --  " + month);
+    }
 
     @Override
     public void onCalendarSelectOutOfRange(Calendar calendar) {

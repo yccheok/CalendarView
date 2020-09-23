@@ -5,10 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.haibin.calendarview.Calendar;
@@ -60,11 +56,11 @@ public class FullActivity extends BaseActivity implements
     protected void initView() {
 
         setStatusBarDarkMode();
-        mTextMonthDay = (TextView) findViewById(R.id.tv_month_day);
-        mTextYear = (TextView) findViewById(R.id.tv_year);
-        mTextLunar = (TextView) findViewById(R.id.tv_lunar);
-        mTextCurrentDay = (TextView) findViewById(R.id.tv_current_day);
-        mCalendarView = (CalendarView) findViewById(R.id.calendarView);
+        mTextMonthDay = findViewById(R.id.tv_month_day);
+        mTextYear = findViewById(R.id.tv_year);
+        mTextLunar = findViewById(R.id.tv_lunar);
+        mTextCurrentDay = findViewById(R.id.tv_current_day);
+        mCalendarView = findViewById(R.id.calendarView);
         mTextMonthDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,18 +84,6 @@ public class FullActivity extends BaseActivity implements
         mTextMonthDay.setText(mCalendarView.getCurMonth() + "月" + mCalendarView.getCurDay() + "日");
         mTextLunar.setText("今日");
         mTextCurrentDay.setText(String.valueOf(mCalendarView.getCurDay()));
-
-        mCalendarView.post(new Runnable() {
-            @Override
-            public void run() {
-                //FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mCalendarView.getMonthViewPager().getLayoutParams();
-                //params.height = 3324;
-                //mCalendarView.setLayoutParams(params);
-                //mCalendarView.getMonthViewPager().setBackgroundColor(0xFF00FF00);
-            }
-        });
-//        mCalendarView.measure(View.MeasureSpec.makeMeasureSpec(1080, View.MeasureSpec.EXACTLY),
-//                View.MeasureSpec.makeMeasureSpec(3324, View.MeasureSpec.EXACTLY));
     }
 
     @Override

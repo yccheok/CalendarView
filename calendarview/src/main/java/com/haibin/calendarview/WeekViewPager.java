@@ -17,12 +17,14 @@ package com.haibin.calendarview;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
@@ -88,7 +90,7 @@ public final class WeekViewPager extends ViewPager {
                     isUsingScrollToCalendar = false;
                     return;
                 }
-                BaseWeekView view = (BaseWeekView) findViewWithTag(position);
+                BaseWeekView view = findViewWithTag(position);
                 if (view != null) {
                     view.performClickCalendar(mDelegate.getSelectMode() != CalendarViewDelegate.SELECT_MODE_DEFAULT ?
                             mDelegate.mIndexCalendar : mDelegate.mSelectedCalendar, !isUsingScrollToCalendar);
@@ -131,7 +133,7 @@ public final class WeekViewPager extends ViewPager {
                 mDelegate.getMaxYearMonth(),
                 mDelegate.getMaxYearDay(),
                 mDelegate.getWeekStart());
-        getAdapter().notifyDataSetChanged();
+        notifyAdapterDataSetChanged();
     }
 
     /**
@@ -139,7 +141,7 @@ public final class WeekViewPager extends ViewPager {
      */
     void updateWeekViewClass() {
         isUpdateWeekView = true;
-        getAdapter().notifyDataSetChanged();
+        notifyAdapterDataSetChanged();
         isUpdateWeekView = false;
     }
 
@@ -174,8 +176,9 @@ public final class WeekViewPager extends ViewPager {
      * @param year  年
      * @param month 月
      * @param day   日
+     * @param invokeListener 调用日期事件
      */
-    void scrollToCalendar(int year, int month, int day, boolean smoothScroll) {
+    void scrollToCalendar(int year, int month, int day, boolean smoothScroll, boolean invokeListener) {
         isUsingScrollToCalendar = true;
         Calendar calendar = new Calendar();
         calendar.setYear(year);
@@ -190,7 +193,7 @@ public final class WeekViewPager extends ViewPager {
         if (mDelegate.mInnerListener != null) {
             mDelegate.mInnerListener.onWeekDateSelected(calendar, false);
         }
-        if (mDelegate.mCalendarSelectListener != null) {
+        if (mDelegate.mCalendarSelectListener != null && invokeListener) {
             mDelegate.mCalendarSelectListener.onCalendarSelect(calendar, false);
         }
         int i = CalendarUtil.getWeekFromDayInMonth(calendar, mDelegate.getWeekStart());
@@ -212,7 +215,7 @@ public final class WeekViewPager extends ViewPager {
             isUsingScrollToCalendar = false;
         }
         setCurrentItem(position, smoothScroll);
-        BaseWeekView view = (BaseWeekView) findViewWithTag(position);
+        BaseWeekView view = findViewWithTag(position);
         if (view != null) {
             view.performClickCalendar(mDelegate.getCurrentDay(), false);
             view.setSelectedCalendar(mDelegate.getCurrentDay());
@@ -242,7 +245,7 @@ public final class WeekViewPager extends ViewPager {
         int curItem = getCurrentItem();
         isUsingScrollToCalendar = curItem != position;
         setCurrentItem(position, smoothScroll);
-        BaseWeekView view = (BaseWeekView) findViewWithTag(position);
+        BaseWeekView view = findViewWithTag(position);
         if (view != null) {
             view.setSelectedCalendar(calendar);
             view.invalidate();
@@ -267,7 +270,7 @@ public final class WeekViewPager extends ViewPager {
      * 更新为默认选择模式
      */
     void updateDefaultSelect() {
-        BaseWeekView view = (BaseWeekView) findViewWithTag(getCurrentItem());
+        BaseWeekView view = findViewWithTag(getCurrentItem());
         if (view != null) {
             view.setSelectedCalendar(mDelegate.mSelectedCalendar);
             view.invalidate();
@@ -285,6 +288,16 @@ public final class WeekViewPager extends ViewPager {
         }
     }
 
+    /**
+     * 更新字体颜色大小
+     */
+    final void updateStyle() {
+        for (int i = 0; i < getChildCount(); i++) {
+            BaseWeekView view = (BaseWeekView) getChildAt(i);
+            view.updateStyle();
+            view.invalidate();
+        }
+    }
 
     /**
      * 更新标记日期
@@ -320,6 +333,9 @@ public final class WeekViewPager extends ViewPager {
      * 更新周起始
      */
     void updateWeekStart() {
+        if (getAdapter() == null) {
+            return;
+        }
         int count = getAdapter().getCount();
         mWeekCount = CalendarUtil.getWeekCountBetweenBothCalendar(
                 mDelegate.getMinYear(),
@@ -382,6 +398,13 @@ public final class WeekViewPager extends ViewPager {
         }
     }
 
+    private void notifyAdapterDataSetChanged() {
+        if (getAdapter() == null) {
+            return;
+        }
+        getAdapter().notifyDataSetChanged();
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
@@ -413,17 +436,18 @@ public final class WeekViewPager extends ViewPager {
         }
 
         @Override
-        public int getItemPosition(Object object) {
+        public int getItemPosition(@NonNull Object object) {
             return isUpdateWeekView ? POSITION_NONE : super.getItemPosition(object);
         }
 
         @Override
-        public boolean isViewFromObject(View view, Object object) {
+        public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
             return view.equals(object);
         }
 
+        @NonNull
         @Override
-        public Object instantiateItem(ViewGroup container, int position) {
+        public Object instantiateItem(@NonNull ViewGroup container, int position) {
             Calendar calendar = CalendarUtil.getFirstCalendarStartWithMinCalendar(mDelegate.getMinYear(),
                     mDelegate.getMinYearMonth(),
                     mDelegate.getMinYearDay(),
@@ -435,7 +459,7 @@ public final class WeekViewPager extends ViewPager {
                 view = (BaseWeekView) constructor.newInstance(getContext());
             } catch (Exception e) {
                 e.printStackTrace();
-                return null;
+                return new DefaultWeekView(getContext());
             }
             view.mParentLayout = mParentLayout;
             view.setup(mDelegate);
@@ -447,14 +471,10 @@ public final class WeekViewPager extends ViewPager {
         }
 
         @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
+        public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
             BaseWeekView view = (BaseWeekView) object;
-            if (view == null) {
-                return;
-            }
             view.onDestroy();
             container.removeView(view);
         }
-
     }
 }

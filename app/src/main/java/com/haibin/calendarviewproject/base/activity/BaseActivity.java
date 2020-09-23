@@ -3,8 +3,8 @@ package com.haibin.calendarviewproject.base.activity;
 import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -84,6 +84,7 @@ public abstract class BaseActivity extends AppCompatActivity {
      * @param dark   是否把状态栏字体及图标颜色设置为深色
      * @return boolean 成功执行返回true
      */
+    @SuppressWarnings("JavaReflectionMemberAccess")
     public static boolean setMeiZuDarkMode(Window window, boolean dark) {
         boolean result = false;
         if (Build.VERSION.SDK_INT >= 24) {

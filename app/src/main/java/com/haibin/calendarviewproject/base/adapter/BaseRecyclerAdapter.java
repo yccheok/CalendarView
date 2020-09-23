@@ -16,7 +16,9 @@
 package com.haibin.calendarviewproject.base.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,18 +50,17 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter {
 
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         final RecyclerView.ViewHolder holder = onCreateDefaultViewHolder(parent, viewType);
-        if (holder != null) {
-            holder.itemView.setTag(holder);
-            holder.itemView.setOnClickListener(onClickListener);
-        }
+        holder.itemView.setTag(holder);
+        holder.itemView.setOnClickListener(onClickListener);
         return holder;
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         onBindViewHolder(holder, mItems.get(position), position);
     }
 

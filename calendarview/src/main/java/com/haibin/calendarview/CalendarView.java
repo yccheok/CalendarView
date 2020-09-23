@@ -20,18 +20,20 @@ import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.viewpager.widget.ViewPager;
+
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -95,8 +97,8 @@ public class CalendarView extends FrameLayout {
      */
     private void init(Context context) {
         LayoutInflater.from(context).inflate(R.layout.cv_layout_calendar_view, this, true);
-        FrameLayout frameContent = (FrameLayout) findViewById(R.id.frameContent);
-        this.mWeekPager = (WeekViewPager) findViewById(R.id.vp_week);
+        FrameLayout frameContent = findViewById(R.id.frameContent);
+        this.mWeekPager = findViewById(R.id.vp_week);
         this.mWeekPager.setup(mDelegate);
 
         try {
@@ -112,22 +114,22 @@ public class CalendarView extends FrameLayout {
 
         this.mWeekLine = findViewById(R.id.line);
         this.mWeekLine.setBackgroundColor(mDelegate.getWeekLineBackground());
-        FrameLayout.LayoutParams lineParams = (FrameLayout.LayoutParams) this.mWeekLine.getLayoutParams();
+        LayoutParams lineParams = (LayoutParams) this.mWeekLine.getLayoutParams();
         lineParams.setMargins(mDelegate.getWeekLineMargin(),
                 mDelegate.getWeekBarHeight(),
                 mDelegate.getWeekLineMargin(),
                 0);
         this.mWeekLine.setLayoutParams(lineParams);
 
-        this.mMonthPager = (MonthViewPager) findViewById(R.id.vp_month);
+        this.mMonthPager = findViewById(R.id.vp_month);
         this.mMonthPager.mWeekPager = mWeekPager;
         this.mMonthPager.mWeekBar = mWeekBar;
-        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) this.mMonthPager.getLayoutParams();
+        LayoutParams params = (LayoutParams) this.mMonthPager.getLayoutParams();
         params.setMargins(0, mDelegate.getWeekBarHeight() + CalendarUtil.dipToPx(context, 1), 0, 0);
         mWeekPager.setLayoutParams(params);
 
 
-        mYearViewPager = (YearViewPager) findViewById(R.id.selectLayout);
+        mYearViewPager = findViewById(R.id.selectLayout);
         mYearViewPager.setBackgroundColor(mDelegate.getYearViewBackground());
         mYearViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -242,7 +244,6 @@ public class CalendarView extends FrameLayout {
      * @param maxYearMonth 最大月份对应月份
      * @param maxYearDay   最大月份对应天
      */
-    @SuppressWarnings("all")
     public void setRange(int minYear, int minYearMonth, int minYearDay,
                          int maxYear, int maxYearMonth, int maxYearDay) {
         if (CalendarUtil.compareTo(minYear, minYearMonth, minYearDay,
@@ -521,7 +522,8 @@ public class CalendarView extends FrameLayout {
         scrollToCalendar(mDelegate.mSelectedCalendar.getYear(),
                 mDelegate.mSelectedCalendar.getMonth(),
                 mDelegate.mSelectedCalendar.getDay(),
-                false);
+                false,
+                true);
     }
 
     /**
@@ -532,7 +534,7 @@ public class CalendarView extends FrameLayout {
      * @param day   day
      */
     public void scrollToCalendar(int year, int month, int day) {
-        scrollToCalendar(year, month, day, false);
+        scrollToCalendar(year, month, day, false, true);
     }
 
     /**
@@ -543,8 +545,20 @@ public class CalendarView extends FrameLayout {
      * @param day          day
      * @param smoothScroll smoothScroll
      */
-    @SuppressWarnings("all")
     public void scrollToCalendar(int year, int month, int day, boolean smoothScroll) {
+        scrollToCalendar(year, month, day, smoothScroll, true);
+    }
+
+    /**
+     * 滚动到指定日期
+     *
+     * @param year           year
+     * @param month          month
+     * @param day            day
+     * @param smoothScroll   smoothScroll
+     * @param invokeListener 调用日期事件
+     */
+    public void scrollToCalendar(int year, int month, int day, boolean smoothScroll, boolean invokeListener) {
 
         Calendar calendar = new Calendar();
         calendar.setYear(year);
@@ -563,9 +577,9 @@ public class CalendarView extends FrameLayout {
         }
 
         if (mWeekPager.getVisibility() == VISIBLE) {
-            mWeekPager.scrollToCalendar(year, month, day, smoothScroll);
+            mWeekPager.scrollToCalendar(year, month, day, smoothScroll, invokeListener);
         } else {
-            mMonthPager.scrollToCalendar(year, month, day, smoothScroll);
+            mMonthPager.scrollToCalendar(year, month, day, smoothScroll, invokeListener);
         }
     }
 
@@ -584,7 +598,6 @@ public class CalendarView extends FrameLayout {
      * @param year         快速滚动的年份
      * @param smoothScroll smoothScroll
      */
-    @SuppressWarnings("all")
     public void scrollToYear(int year, boolean smoothScroll) {
         if (mYearViewPager.getVisibility() != VISIBLE) {
             return;
@@ -618,6 +631,19 @@ public class CalendarView extends FrameLayout {
      */
     public final void setYearViewScrollable(boolean yearViewScrollable) {
         mDelegate.setYearViewScrollable(yearViewScrollable);
+    }
+
+
+    public final void setDefaultMonthViewSelectDay() {
+        mDelegate.setDefaultCalendarSelectDay(CalendarViewDelegate.FIRST_DAY_OF_MONTH);
+    }
+
+    public final void setLastMonthViewSelectDay() {
+        mDelegate.setDefaultCalendarSelectDay(CalendarViewDelegate.LAST_MONTH_VIEW_SELECT_DAY);
+    }
+
+    public final void setLastMonthViewSelectDayIgnoreCurrent() {
+        mDelegate.setDefaultCalendarSelectDay(CalendarViewDelegate.LAST_MONTH_VIEW_SELECT_DAY_IGNORE_CURRENT);
     }
 
     /**
@@ -670,6 +696,7 @@ public class CalendarView extends FrameLayout {
      *
      * @param calendars calendars
      */
+    @SuppressWarnings("RedundantCollectionOperation")
     public final void removeMultiSelect(Calendar... calendars) {
         if (calendars == null || calendars.length == 0) {
             return;
@@ -769,7 +796,7 @@ public class CalendarView extends FrameLayout {
             return;
         }
         mDelegate.setWeekBarClass(cls);
-        FrameLayout frameContent = (FrameLayout) findViewById(R.id.frameContent);
+        FrameLayout frameContent = findViewById(R.id.frameContent);
         frameContent.removeView(mWeekBar);
 
         try {
@@ -1219,6 +1246,44 @@ public class CalendarView extends FrameLayout {
         mWeekPager.updateScheme();
     }
 
+    /**
+     * 添加事物标记
+     *
+     * @param calendar calendar
+     */
+    public final void addSchemeDate(Calendar calendar) {
+        if (calendar == null || !calendar.isAvailable()) {
+            return;
+        }
+        if (mDelegate.mSchemeDatesMap == null) {
+            mDelegate.mSchemeDatesMap = new HashMap<>();
+        }
+        mDelegate.mSchemeDatesMap.remove(calendar.toString());
+        mDelegate.mSchemeDatesMap.put(calendar.toString(), calendar);
+        this.mDelegate.updateSelectCalendarScheme();
+        this.mYearViewPager.update();
+        this.mMonthPager.updateScheme();
+        this.mWeekPager.updateScheme();
+    }
+
+    /**
+     * 添加事物标记
+     *
+     * @param mSchemeDates mSchemeDates
+     */
+    public final void addSchemeDate(Map<String, Calendar> mSchemeDates) {
+        if (this.mDelegate == null || mSchemeDates == null || mSchemeDates.size() == 0) {
+            return;
+        }
+        if (this.mDelegate.mSchemeDatesMap == null) {
+            this.mDelegate.mSchemeDatesMap = new HashMap<>();
+        }
+        this.mDelegate.addSchemes(mSchemeDates);
+        this.mDelegate.updateSelectCalendarScheme();
+        this.mYearViewPager.update();
+        this.mMonthPager.updateScheme();
+        this.mWeekPager.updateScheme();
+    }
 
     /**
      * 移除某天的标记
@@ -1233,9 +1298,7 @@ public class CalendarView extends FrameLayout {
         if (mDelegate.mSchemeDatesMap == null || mDelegate.mSchemeDatesMap.size() == 0) {
             return;
         }
-        if (mDelegate.mSchemeDatesMap.containsKey(calendar.toString())) {
-            mDelegate.mSchemeDatesMap.remove(calendar.toString());
-        }
+        mDelegate.mSchemeDatesMap.remove(calendar.toString());
         if (mDelegate.mSelectedCalendar.equals(calendar)) {
             mDelegate.clearSelectedScheme();
         }
@@ -1274,8 +1337,13 @@ public class CalendarView extends FrameLayout {
             int otherMonthColor,
             int curMonthLunarTextColor,
             int otherMonthLunarTextColor) {
+        if (mDelegate == null || mMonthPager == null || mWeekPager == null) {
+            return;
+        }
         mDelegate.setTextColor(currentDayTextColor, curMonthTextColor,
                 otherMonthColor, curMonthLunarTextColor, otherMonthLunarTextColor);
+        mMonthPager.updateStyle();
+        mWeekPager.updateStyle();
     }
 
     /**
@@ -1286,7 +1354,12 @@ public class CalendarView extends FrameLayout {
      * @param selectedLunarTextColor 选中的农历字体颜色
      */
     public void setSelectedColor(int selectedThemeColor, int selectedTextColor, int selectedLunarTextColor) {
+        if (mDelegate == null || mMonthPager == null || mWeekPager == null) {
+            return;
+        }
         mDelegate.setSelectColor(selectedThemeColor, selectedTextColor, selectedLunarTextColor);
+        mMonthPager.updateStyle();
+        mWeekPager.updateStyle();
     }
 
     /**
@@ -1296,7 +1369,12 @@ public class CalendarView extends FrameLayout {
      * @param schemeColor        标记背景色
      */
     public void setThemeColor(int selectedThemeColor, int schemeColor) {
+        if (mDelegate == null || mMonthPager == null || mWeekPager == null) {
+            return;
+        }
         mDelegate.setThemeColor(selectedThemeColor, schemeColor);
+        mMonthPager.updateStyle();
+        mWeekPager.updateStyle();
     }
 
     /**
@@ -1307,7 +1385,12 @@ public class CalendarView extends FrameLayout {
      * @param schemeTextColor      标记字体颜色
      */
     public void setSchemeColor(int schemeColor, int schemeTextColor, int schemeLunarTextColor) {
+        if (mDelegate == null || mMonthPager == null || mWeekPager == null) {
+            return;
+        }
         mDelegate.setSchemeColor(schemeColor, schemeTextColor, schemeLunarTextColor);
+        mMonthPager.updateStyle();
+        mWeekPager.updateStyle();
     }
 
     /**
@@ -1318,7 +1401,11 @@ public class CalendarView extends FrameLayout {
      * @param yarViewSchemeTextColor 年视图标记颜色
      */
     public void setYearViewTextColor(int yearViewMonthTextColor, int yearViewDayTextColor, int yarViewSchemeTextColor) {
+        if (mDelegate == null || mYearViewPager == null) {
+            return;
+        }
         mDelegate.setYearViewTextColor(yearViewMonthTextColor, yearViewDayTextColor, yarViewSchemeTextColor);
+        mYearViewPager.updateStyle();
     }
 
     /**
@@ -1328,6 +1415,9 @@ public class CalendarView extends FrameLayout {
      * @param weekTextColor  字体颜色
      */
     public void setWeeColor(int weekBackground, int weekTextColor) {
+        if (mWeekBar == null) {
+            return;
+        }
         mWeekBar.setBackgroundColor(weekBackground);
         mWeekBar.setTextColor(weekTextColor);
     }
@@ -1499,6 +1589,14 @@ public class CalendarView extends FrameLayout {
      * 更新当前日期
      */
     public final void updateCurrentDate() {
+        if (mDelegate == null || mMonthPager == null || mWeekPager == null) {
+            return;
+        }
+        java.util.Calendar calendar = java.util.Calendar.getInstance();
+        int day = calendar.get(java.util.Calendar.DAY_OF_MONTH);
+        if (getCurDay() == day) {
+            return;
+        }
         mDelegate.updateCurrentDay();
         mMonthPager.updateCurrentDate();
         mWeekPager.updateCurrentDate();

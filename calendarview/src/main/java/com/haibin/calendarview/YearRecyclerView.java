@@ -16,10 +16,11 @@
 package com.haibin.calendarview;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * 年份布局选择View
@@ -99,6 +100,17 @@ public final class YearRecyclerView extends RecyclerView {
     }
 
     /**
+     * 更新字体颜色大小
+     */
+    final void updateStyle(){
+        for (int i = 0; i < getChildCount(); i++) {
+            YearView view = (YearView) getChildAt(i);
+            view.updateStyle();
+            view.invalidate();
+        }
+    }
+
+    /**
      * 月份选择事件
      *
      * @param listener listener
@@ -107,6 +119,13 @@ public final class YearRecyclerView extends RecyclerView {
         this.mListener = listener;
     }
 
+
+    void notifyAdapterDataSetChanged(){
+        if(getAdapter() == null){
+            return;
+        }
+        getAdapter().notifyDataSetChanged();
+    }
 
     @Override
     protected void onMeasure(int widthSpec, int heightSpec) {

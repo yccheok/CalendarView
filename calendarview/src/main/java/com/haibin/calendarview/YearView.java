@@ -20,10 +20,11 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
+
+import androidx.annotation.Nullable;
 
 import java.util.List;
 
@@ -243,21 +244,28 @@ public abstract class YearView extends View {
      */
     final void setup(CalendarViewDelegate delegate) {
         this.mDelegate = delegate;
-        this.mCurMonthTextPaint.setTextSize(delegate.getYearViewDayTextSize());
-        this.mSchemeTextPaint.setTextSize(delegate.getYearViewDayTextSize());
-        this.mOtherMonthTextPaint.setTextSize(delegate.getYearViewDayTextSize());
-        this.mCurDayTextPaint.setTextSize(delegate.getYearViewDayTextSize());
-        this.mSelectTextPaint.setTextSize(delegate.getYearViewDayTextSize());
+        updateStyle();
+    }
 
-        this.mSchemeTextPaint.setColor(delegate.getYearViewSchemeTextColor());
-        this.mCurMonthTextPaint.setColor(delegate.getYearViewDayTextColor());
-        this.mOtherMonthTextPaint.setColor(delegate.getYearViewDayTextColor());
-        this.mCurDayTextPaint.setColor(delegate.getYearViewCurDayTextColor());
-        this.mSelectTextPaint.setColor(delegate.getYearViewSelectTextColor());
-        this.mMonthTextPaint.setTextSize(delegate.getYearViewMonthTextSize());
-        this.mMonthTextPaint.setColor(delegate.getYearViewMonthTextColor());
-        this.mWeekTextPaint.setColor(delegate.getYearViewWeekTextColor());
-        this.mWeekTextPaint.setTextSize(delegate.getYearViewWeekTextSize());
+    final void updateStyle(){
+        if(mDelegate == null){
+            return;
+        }
+        this.mCurMonthTextPaint.setTextSize(mDelegate.getYearViewDayTextSize());
+        this.mSchemeTextPaint.setTextSize(mDelegate.getYearViewDayTextSize());
+        this.mOtherMonthTextPaint.setTextSize(mDelegate.getYearViewDayTextSize());
+        this.mCurDayTextPaint.setTextSize(mDelegate.getYearViewDayTextSize());
+        this.mSelectTextPaint.setTextSize(mDelegate.getYearViewDayTextSize());
+
+        this.mSchemeTextPaint.setColor(mDelegate.getYearViewSchemeTextColor());
+        this.mCurMonthTextPaint.setColor(mDelegate.getYearViewDayTextColor());
+        this.mOtherMonthTextPaint.setColor(mDelegate.getYearViewDayTextColor());
+        this.mCurDayTextPaint.setColor(mDelegate.getYearViewCurDayTextColor());
+        this.mSelectTextPaint.setColor(mDelegate.getYearViewSelectTextColor());
+        this.mMonthTextPaint.setTextSize(mDelegate.getYearViewMonthTextSize());
+        this.mMonthTextPaint.setColor(mDelegate.getYearViewMonthTextColor());
+        this.mWeekTextPaint.setColor(mDelegate.getYearViewWeekTextColor());
+        this.mWeekTextPaint.setTextSize(mDelegate.getYearViewWeekTextSize());
     }
 
     /**
@@ -285,6 +293,7 @@ public abstract class YearView extends View {
      * @param width  width
      * @param height height
      */
+    @SuppressWarnings("IntegerDivisionInFloatingPointContext")
     final void measureSize(int width, int height) {
 
         Rect rect = new Rect();
@@ -322,6 +331,9 @@ public abstract class YearView extends View {
         for (Calendar a : mItems) {
             if (mDelegate.mSchemeDatesMap.containsKey(a.toString())) {
                 Calendar d = mDelegate.mSchemeDatesMap.get(a.toString());
+                if(d == null){
+                    continue;
+                }
                 a.setScheme(TextUtils.isEmpty(d.getScheme()) ? mDelegate.getSchemeText() : d.getScheme());
                 a.setSchemeColor(d.getSchemeColor());
                 a.setSchemes(d.getSchemes());

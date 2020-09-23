@@ -1,7 +1,7 @@
 package com.haibin.calendarviewproject;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -63,9 +63,9 @@ public class ArticleAdapter extends GroupRecyclerAdapter<String, Article> {
 
         private ArticleViewHolder(View itemView) {
             super(itemView);
-            mTextTitle = (TextView) itemView.findViewById(R.id.tv_title);
-            mTextContent = (TextView) itemView.findViewById(R.id.tv_content);
-            mImageView = (ImageView) itemView.findViewById(R.id.imageView);
+            mTextTitle = itemView.findViewById(R.id.tv_title);
+            mTextContent = itemView.findViewById(R.id.tv_content);
+            mImageView = itemView.findViewById(R.id.imageView);
         }
     }
 

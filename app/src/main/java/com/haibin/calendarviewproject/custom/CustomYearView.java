@@ -81,6 +81,7 @@ public class CustomYearView extends YearView {
     }
 
 
+
     @Override
     protected void onDrawWeek(Canvas canvas, int week, int x, int y, int width, int height) {
         String text = getContext().getResources().getStringArray(com.haibin.calendarview.R.array.year_view_week_string_array)[week];

@@ -18,9 +18,10 @@ package com.haibin.calendarview;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+
+import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,6 +50,22 @@ final class CalendarViewDelegate {
      */
     static final int WEEK_START_WITH_SAT = 7;
 
+    /**
+     * 默认选择日期1号first_day_of_month
+     */
+    static final int FIRST_DAY_OF_MONTH = 0;
+
+    /**
+     * 跟随上个月last_select_day
+     */
+    static final int LAST_MONTH_VIEW_SELECT_DAY = 1;
+
+    /**
+     * 跟随上个月last_select_day_ignore_current忽视今天
+     */
+    static final int LAST_MONTH_VIEW_SELECT_DAY_IGNORE_CURRENT = 2;
+
+    private int mDefaultCalendarSelectDay;
 
     /**
      * 周起始
@@ -403,6 +420,8 @@ final class CalendarViewDelegate {
         mWeekViewScrollable = array.getBoolean(R.styleable.CalendarView_week_view_scrollable, true);
         mYearViewScrollable = array.getBoolean(R.styleable.CalendarView_year_view_scrollable, true);
 
+        mDefaultCalendarSelectDay = array.getInt(R.styleable.CalendarView_month_view_auto_select_day,
+                FIRST_DAY_OF_MONTH);
 
         mMonthViewShowMode = array.getInt(R.styleable.CalendarView_month_view_show_mode, MODE_ALL_MONTH);
         mWeekStart = array.getInt(R.styleable.CalendarView_week_start_with, WEEK_START_WITH_SUN);
@@ -803,6 +822,14 @@ final class CalendarViewDelegate {
         this.mWeekStart = mWeekStart;
     }
 
+    void setDefaultCalendarSelectDay(int defaultCalendarSelect) {
+        this.mDefaultCalendarSelectDay = defaultCalendarSelect;
+    }
+
+    int getDefaultCalendarSelectDay() {
+        return mDefaultCalendarSelectDay;
+    }
+
     int getWeekTextSize() {
         return mWeekTextSize;
     }
@@ -980,6 +1007,9 @@ final class CalendarViewDelegate {
         for (Calendar a : mItems) {
             if (mSchemeDatesMap.containsKey(a.toString())) {
                 Calendar d = mSchemeDatesMap.get(a.toString());
+                if(d == null){
+                    continue;
+                }
                 a.setScheme(TextUtils.isEmpty(d.getScheme()) ? getSchemeText() : d.getScheme());
                 a.setSchemeColor(d.getSchemeColor());
                 a.setSchemes(d.getSchemes());
@@ -988,6 +1018,28 @@ final class CalendarViewDelegate {
                 a.setSchemeColor(0);
                 a.setSchemes(null);
             }
+        }
+    }
+
+    /**
+     * 添加数据
+     *
+     * @param mSchemeDates mSchemeDates
+     */
+    final void addSchemes(Map<String, Calendar> mSchemeDates) {
+        if (mSchemeDates == null || mSchemeDates.size() == 0) {
+            return;
+        }
+        if (this.mSchemeDatesMap == null) {
+            this.mSchemeDatesMap = new HashMap<>();
+        }
+        for (String key : mSchemeDates.keySet()) {
+            this.mSchemeDatesMap.remove(key);
+            Calendar calendar = mSchemeDates.get(key);
+            if(calendar == null){
+                continue;
+            }
+            this.mSchemeDatesMap.put(key,calendar);
         }
     }
 
@@ -1033,11 +1085,13 @@ final class CalendarViewDelegate {
             calendar.setYear(date.get(java.util.Calendar.YEAR));
             calendar.setMonth(date.get(java.util.Calendar.MONTH) + 1);
             calendar.setDay(date.get(java.util.Calendar.DAY_OF_MONTH));
+            LunarCalendar.setupLunarCalendar(calendar);
+            updateCalendarScheme(calendar);
             if (mCalendarInterceptListener != null &&
                     mCalendarInterceptListener.onCalendarIntercept(calendar)) {
                 continue;
             }
-            LunarCalendar.setupLunarCalendar(calendar);
+
             calendars.add(calendar);
         }
         addSchemesFromMap(calendars);
