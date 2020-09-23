@@ -659,6 +659,7 @@ public class CalendarLayout extends LinearLayout {
             //});
 
             // https://github.com/huanghaibin-dev/CalendarView/issues/505
+            // Ensure mCalendarLayout.isExpand() during onResume able to return correct value
             showWeek();
         }
         super.onRestoreInstanceState(superData);
