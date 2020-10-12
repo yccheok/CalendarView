@@ -1,5 +1,9 @@
 This file summarizes changes in CalendarView releases.
 
+2.1 - 2020-10-12
+================
+Bugfix:  NPE on WeekViewPager.
+
 2.0 - 2020-09-24
 =================
 Bugfix:  Carry over all changes from unofficial branch.
