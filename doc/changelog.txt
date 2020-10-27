@@ -1,5 +1,9 @@
 This file summarizes changes in CalendarView releases.
 
+2.2 - 2020-10-27
+================
+Feature: In setupLunarCalendar, holiday (gregorian, festival) has higher precedence than solarTerm.
+
 2.1 - 2020-10-12
 ================
 Bugfix:  NPE on WeekViewPager.

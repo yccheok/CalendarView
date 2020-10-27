@@ -375,12 +375,12 @@ public final class LunarCalendar {
         calendar.setTraditionFestival(festival);
         lunarCalendar.setTraditionFestival(festival);
         lunarCalendar.setSolarTerm(solarTerm);
-        if (!TextUtils.isEmpty(solarTerm)) {
-            calendar.setLunar(solarTerm);
-        } else if (!TextUtils.isEmpty(gregorian)) {
+        if (!TextUtils.isEmpty(gregorian)) {
             calendar.setLunar(gregorian);
         } else if (!TextUtils.isEmpty(festival)) {
             calendar.setLunar(festival);
+        } else if (!TextUtils.isEmpty(solarTerm)) {
+            calendar.setLunar(solarTerm);
         } else {
             calendar.setLunar(lunarText);
         }
