@@ -1,12 +1,12 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 30
 
     defaultConfig {
         minSdkVersion 14
         //noinspection OldTargetApi
-        targetSdkVersion 28
+        targetSdkVersion 30
         versionCode 369
         versionName "3.6.9"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
