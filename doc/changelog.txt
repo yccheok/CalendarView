@@ -1,5 +1,9 @@
 This file summarizes changes in CalendarView releases.
 
+2.4 - 2022-04-14
+================
+Bugfix:  Workaround for issue https://github.com/huanghaibin-dev/CalendarView/issues/800
+
 2.2 - 2020-10-27
 ================
 Feature: In setupLunarCalendar, holiday (gregorian, festival) has higher precedence than solarTerm.
