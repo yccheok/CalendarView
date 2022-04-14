@@ -88,6 +88,8 @@ public class CalendarLayout extends LinearLayout {
 
     private boolean isWeekView;
 
+    private CalendarLayoutListener mCalendarLayoutListener;
+
     /**
      * 星期栏
      */
@@ -308,6 +310,14 @@ public class CalendarLayout extends LinearLayout {
         }
 
         int action = event.getAction();
+
+        // This seems like the best place, to informing listener that we are start moving up/ down,
+        // by monitoring ACTION_MOVE.
+        // Workaround for issue https://github.com/huanghaibin-dev/CalendarView/issues/800
+        if (mCalendarLayoutListener != null) {
+            mCalendarLayoutListener.action(action);
+        }
+        
         float y = event.getY();
         mVelocityTracker.addMovement(event);
         switch (action) {
@@ -951,6 +961,10 @@ public class CalendarLayout extends LinearLayout {
                 mDelegate.getWeekBarHeight() + mDelegate.getCalendarItemHeight();
     }
 
+    public void setCalendarLayoutListener(CalendarLayoutListener calendarLayoutListener) {
+        this.mCalendarLayoutListener = calendarLayoutListener;
+    }
+
     /**
      * 如果有十分特别的ContentView，可以自定义实现这个接口
      */
@@ -961,5 +975,9 @@ public class CalendarLayout extends LinearLayout {
          * @return 是否滚动到顶部
          */
         boolean isScrollToTop();
+    }
+
+    public interface CalendarLayoutListener {
+        void action(int action);
     }
 }
