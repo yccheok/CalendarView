@@ -1,6 +1,6 @@
 This file summarizes changes in CalendarView releases.
 
-2.4 - 2022-04-14
+2.5 - 2022-04-14
 ================
 Bugfix:  Workaround for issue https://github.com/huanghaibin-dev/CalendarView/issues/800
 
