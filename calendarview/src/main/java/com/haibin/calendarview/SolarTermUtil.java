@@ -24,6 +24,9 @@ import android.content.Context;
 @SuppressWarnings("all")
 public final class SolarTermUtil {
 
+    public static void resetStatic() {
+        SOLAR_TERMS = null;
+    }
 
     static void init(Context context) {
         SOLAR_TERMS = context.getResources().getStringArray(R.array.solar_term);

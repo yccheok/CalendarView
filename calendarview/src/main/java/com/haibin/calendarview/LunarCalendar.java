@@ -30,6 +30,19 @@ import java.util.Map;
 @SuppressWarnings("all")
 public final class LunarCalendar {
 
+    public static void resetStatic() {
+        TrunkBranchAnnals.resetStatic();
+        SolarTermUtil.resetStatic();
+
+        MONTH_STR = null;
+        TRADITION_FESTIVAL_STR = null;
+        DAY_STR = null;
+        SPECIAL_FESTIVAL_STR = null;
+        SOLAR_CALENDAR = null;
+
+        SPECIAL_FESTIVAL.clear();
+        SOLAR_TERMS.clear();
+    }
 
     static void init(Context context) {
         if (MONTH_STR != null) {

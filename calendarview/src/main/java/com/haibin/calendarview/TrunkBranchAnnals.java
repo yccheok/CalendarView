@@ -19,6 +19,11 @@ public final class TrunkBranchAnnals {
      */
     private static String[] BRANCH_STR = null;
 
+    public static void resetStatic() {
+        TRUNK_STR = null;
+        BRANCH_STR = null;
+    }
+
     /**
      * 单独使用请先调用这个方法
      * @param context context
